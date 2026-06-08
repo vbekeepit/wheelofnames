@@ -6,10 +6,10 @@
     "short": "Spin the Wheel",
     "full": "Spin the Wheel - Meeting Participant Selector"
   },
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": {
     "short": "Randomly select meeting participants using an interactive spinning wheel",
-    "full": "Engage your team by spinning a wheel to randomly select meeting participants for Q&A, presentations, or activities."
+    "full": "Engage your team by spinning a wheel to randomly select meeting participants for Q&A, presentations, or activities. Features keyboard controls, smooth animations, and real-time participant data."
   },
   "developer": {
     "name": "Keepit",
@@ -37,10 +37,15 @@
   ],
   "webApplicationInfo": {
     "id": "{{MICROSOFT_APP_ID}}",
-    "resource": "https://{{DOMAIN}}"
+    "resource": "https://{{DOMAIN}}",
+    "applicationPermissions": [
+      "TeamsAppInstallation.Manage.Chat",
+      "TeamsAppInstallation.Manage.Group"
+    ]
   },
   "validDomains": [
     "{{DOMAIN}}"
   ],
-  "accentColor": "#0c5cf5"
+  "accentColor": "#0c5cf5",
+  "isValidDomainWildcard": false
 }
