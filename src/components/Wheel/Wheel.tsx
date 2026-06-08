@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import type { Participant } from '@/types/meeting';
 import { easing, calculateRotationForSegment, detectWinner, calculateSpinRotation } from '@/utils/wheelAnimation';
 import './Wheel.css';
@@ -9,6 +9,7 @@ export interface WheelProps {
   isDisabled?: boolean;
   spinDuration?: number;
   spins?: number;
+  enableKeyboardControl?: boolean;
 }
 
 export const Wheel: React.FC<WheelProps> = ({
@@ -17,6 +18,7 @@ export const Wheel: React.FC<WheelProps> = ({
   isDisabled = false,
   spinDuration = 4000,
   spins = 3,
+  enableKeyboardControl = true,
 }) => {
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -26,6 +28,21 @@ export const Wheel: React.FC<WheelProps> = ({
 
   const segmentCount = Math.max(participants.length, 1);
   const segmentAngle = 360 / segmentCount;
+
+  // Keyboard control (spacebar to spin)
+  useEffect(() => {
+    if (!enableKeyboardControl) return;
+
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      if ((event.code === 'Space' || event.key === ' ') && !isSpinning && !isDisabled) {
+        event.preventDefault();
+        spin();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSpinning, isDisabled, enableKeyboardControl]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const spin = async (): Promise<void> => {
     if (isSpinning || isDisabled || participants.length === 0) return;

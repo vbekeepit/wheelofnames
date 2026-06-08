@@ -1,0 +1,208 @@
+.winner-announcement-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.winner-announcement-card {
+  background: linear-gradient(135deg, #0c5cf5 0%, #06755a 100%);
+  color: white;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.winner-emoji {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.winner-announcement-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: 0.5px;
+}
+
+.winner-details {
+  margin: 1.5rem 0;
+}
+
+.winner-announcement-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  word-break: break-word;
+}
+
+.winner-announcement-role {
+  font-size: 0.9rem;
+  opacity: 0.95;
+  margin: 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.winner-announcement-email {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin: 0.5rem 0 0 0;
+  word-break: break-all;
+}
+
+.winner-announcement-actions {
+  margin: 2rem 0 1rem 0;
+}
+
+.dismiss-button {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: white;
+  border: 2px solid white;
+  padding: 0.75rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  min-width: 150px;
+}
+
+.dismiss-button:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.dismiss-button:active {
+  transform: translateY(0);
+}
+
+.winner-announcement-progress {
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+  width: 100%;
+  transform-origin: left;
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* Dark theme support */
+.theme-dark .winner-announcement-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.theme-dark .winner-announcement-card {
+  background: linear-gradient(135deg, #0c5cf5 0%, #0a3f2e 100%);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .winner-announcement-card {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+    margin: auto;
+  }
+
+  .winner-emoji {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .winner-announcement-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .winner-announcement-name {
+    font-size: 1.25rem;
+  }
+
+  .dismiss-button {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.95rem;
+    min-width: 120px;
+  }
+}
+
+/* Accessibility: Remove animations if motion is reduced */
+@media (prefers-reduced-motion: reduce) {
+  .winner-announcement-overlay,
+  .winner-announcement-card,
+  .winner-emoji,
+  .dismiss-button {
+    animation: none;
+  }
+
+  .winner-emoji {
+    animation: none;
+  }
+}

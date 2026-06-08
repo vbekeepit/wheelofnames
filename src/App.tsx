@@ -1,5 +1,6 @@
 import { useMeetingContext } from '@/hooks/useMeetingContext';
 import { useParticipants } from '@/hooks/useParticipants';
+import { WheelDisplay } from '@/components/WheelDisplay';
 
 export default function App() {
   const { context, isLoading: contextLoading, error: contextError } = useMeetingContext();
@@ -8,6 +9,9 @@ export default function App() {
     context?.userId || '',
     context?.tenantId || ''
   );
+
+  // Determine theme from context
+  const theme = context?.theme || 'default';
 
   if (contextLoading) {
     return (
@@ -32,52 +36,33 @@ export default function App() {
   }
 
   return (
-    <div className={`app-container theme-${context?.theme || 'default'}`}>
+    <div className={`app-container theme-${theme}`}>
       <header className="app-header">
         <h1>Spin the Wheel</h1>
-        <p className="subtitle">Select a meeting participant</p>
+        <p className="subtitle">{context?.meetingTitle || 'Select a meeting participant'}</p>
       </header>
 
       <main className="app-main">
-        {participantsLoading ? (
-          <div className="loading">
-            <p>Loading participants...</p>
-          </div>
-        ) : participantsError ? (
+        {contextError ? (
           <div className="error">
-            <h2>Error Loading Participants</h2>
-            <p>{participantsError}</p>
+            <h2>Unable to Initialize</h2>
+            <p>{contextError}</p>
+            <p className="error-hint">This app requires Teams meeting context.</p>
           </div>
         ) : (
-          <div className="content">
-            <div className="meeting-info">
-              <p>Meeting: <strong>{context?.meetingTitle || 'Teams Meeting'}</strong></p>
-              <p>Participants: <strong>{participants.length}</strong></p>
-            </div>
-
-            <div className="participants-preview">
-              <h2>Meeting Participants</h2>
-              <ul className="participants-list">
-                {participants.map((participant) => (
-                  <li key={participant.id} className="participant-item">
-                    <span className="participant-name">{participant.displayName}</span>
-                    {participant.participantRole && (
-                      <span className="participant-role">{participant.participantRole}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="placeholder">
-              <p>🎡 Wheel component will be rendered here in Phase 2</p>
-            </div>
-          </div>
+          <WheelDisplay
+            allParticipants={participants}
+            isLoading={participantsLoading}
+            error={participantsError}
+          />
         )}
       </main>
 
       <footer className="app-footer">
-        <p className="phase-indicator">Phase 1: Foundation & Context Access</p>
+        <p className="phase-indicator">Phase 3: Animation & Interaction</p>
+        {participants.length > 0 && (
+          <p className="participant-count">{participants.length} participants</p>
+        )}
       </footer>
     </div>
   );
