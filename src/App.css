@@ -1,0 +1,218 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Light theme (default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --text-primary: #262626;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
+  --accent-color: #0c5cf5;
+}
+
+.app-container.theme-dark {
+  --bg-primary: #1f1f1f;
+  --bg-secondary: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --border-color: #404040;
+}
+
+.app-container.theme-contrast {
+  --bg-primary: #ffffff;
+  --bg-secondary: #000000;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --border-color: #000000;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.app-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+}
+
+.app-header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.app-header .subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.app-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+}
+
+.loading p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.error {
+  padding: 2rem;
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  color: #c33;
+}
+
+.error h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.error p {
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.error-hint {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.meeting-info {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.meeting-info p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.meeting-info strong {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.participants-preview {
+  margin-bottom: 2rem;
+}
+
+.participants-preview h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.participants-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.participant-item {
+  padding: 0.75rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.participant-name {
+  font-weight: 500;
+  flex: 1;
+}
+
+.participant-role {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.placeholder {
+  padding: 3rem 2rem;
+  text-align: center;
+  background-color: var(--bg-secondary);
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+}
+
+.placeholder p {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    padding: 1rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .app-main {
+    padding: 1rem;
+  }
+
+  .participants-list {
+    grid-template-columns: 1fr;
+  }
+
+  .meeting-info {
+    padding: 0.75rem;
+  }
+}
