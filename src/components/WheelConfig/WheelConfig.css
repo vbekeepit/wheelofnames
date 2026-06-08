@@ -1,0 +1,318 @@
+.wheel-config {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--bg-primary, #ffffff);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.config-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.config-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary, #262626);
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary, #666666);
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background-color: var(--bg-secondary, #f5f5f5);
+  color: var(--text-primary, #262626);
+}
+
+.config-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Search section */
+.search-section {
+  display: flex;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 6px;
+  background-color: var(--bg-secondary, #f5f5f5);
+  color: var(--text-primary, #262626);
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-color, #0c5cf5);
+  background-color: var(--bg-primary, #ffffff);
+  box-shadow: 0 0 0 3px rgba(12, 92, 245, 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--text-secondary, #666666);
+}
+
+/* Quick actions */
+.quick-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.action-button {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 6px;
+  background-color: var(--bg-secondary, #f5f5f5);
+  color: var(--text-primary, #262626);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-button:hover:not(:disabled) {
+  background-color: var(--accent-color, #0c5cf5);
+  color: white;
+  border-color: var(--accent-color, #0c5cf5);
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selection-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #666666);
+  margin-left: auto;
+}
+
+/* Participants section */
+.participants-section {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 200px;
+}
+
+.participants-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.participant-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.participant-checkbox:hover {
+  background-color: var(--bg-secondary, #f5f5f5);
+}
+
+.participant-checkbox input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkbox-custom {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color, #e0e0e0);
+  border-radius: 4px;
+  background-color: var(--bg-primary, #ffffff);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.participant-checkbox input:checked ~ .checkbox-custom {
+  background-color: var(--accent-color, #0c5cf5);
+  border-color: var(--accent-color, #0c5cf5);
+}
+
+.participant-checkbox input:checked ~ .checkbox-custom::after {
+  content: '✓';
+  position: absolute;
+  top: -3px;
+  left: 3px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.participant-checkbox input:focus ~ .checkbox-custom {
+  box-shadow: 0 0 0 3px rgba(12, 92, 245, 0.1);
+}
+
+.participant-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.participant-name {
+  font-weight: 500;
+  color: var(--text-primary, #262626);
+  font-size: 0.95rem;
+}
+
+.participant-role {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #666666);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.no-results {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-secondary, #666666);
+  font-size: 0.95rem;
+}
+
+/* Footer */
+.config-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  background-color: var(--bg-secondary, #f5f5f5);
+}
+
+.info-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #666666);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .wheel-config {
+    border-radius: 0;
+  }
+
+  .config-header {
+    padding: 1rem;
+  }
+
+  .config-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .config-content {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .config-footer {
+    padding: 0.75rem 1rem;
+  }
+
+  .quick-actions {
+    gap: 0.25rem;
+  }
+
+  .action-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .selection-count {
+    font-size: 0.8rem;
+    width: 100%;
+    text-align: left;
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Dark theme */
+.theme-dark .wheel-config {
+  background-color: var(--bg-primary, #1f1f1f);
+}
+
+.theme-dark .config-header {
+  border-bottom-color: var(--border-color, #404040);
+}
+
+.theme-dark .config-header h2 {
+  color: var(--text-primary, #ffffff);
+}
+
+.theme-dark .search-input {
+  background-color: var(--bg-secondary, #2a2a2a);
+  border-color: var(--border-color, #404040);
+  color: var(--text-primary, #ffffff);
+}
+
+.theme-dark .search-input:focus {
+  background-color: var(--bg-primary, #1f1f1f);
+  border-color: var(--accent-color, #0c5cf5);
+}
+
+.theme-dark .action-button {
+  background-color: var(--bg-secondary, #2a2a2a);
+  border-color: var(--border-color, #404040);
+  color: var(--text-primary, #ffffff);
+}
+
+.theme-dark .participant-checkbox:hover {
+  background-color: var(--bg-secondary, #2a2a2a);
+}
+
+.theme-dark .checkbox-custom {
+  background-color: var(--bg-primary, #1f1f1f);
+  border-color: var(--border-color, #404040);
+}
+
+.theme-dark .participant-name {
+  color: var(--text-primary, #ffffff);
+}
+
+.theme-dark .config-footer {
+  background-color: var(--bg-secondary, #2a2a2a);
+  border-top-color: var(--border-color, #404040);
+}

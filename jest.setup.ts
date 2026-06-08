@@ -22,8 +22,3 @@ jest.mock('@microsoft/teams-js', () => ({
     registerOnThemeChangeHandler: jest.fn(),
   },
 }));
-
-// Mock @microsoft/live-share
-jest.mock('@microsoft/live-share', () => ({
-  LiveShareClient: jest.fn(),
-}));
