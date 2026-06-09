@@ -1,51 +1,33 @@
 {
   "manifestVersion": "1.13",
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.13/MicrosoftTeams.schema.json",
-  "id": "{{MICROSOFT_APP_ID}}",
+  "id": "12345678-1234-1234-1234-123456789012",
   "name": {
     "short": "Spin the Wheel",
     "full": "Spin the Wheel - Meeting Participant Selector"
   },
   "version": "0.4.0",
+  "icons": {
+    "color": "icon-color.png",
+    "outline": "icon-outline.png"
+  },
   "description": {
     "short": "Randomly select meeting participants using an interactive spinning wheel",
     "full": "Engage your team by spinning a wheel to randomly select meeting participants for Q&A, presentations, or activities. Features keyboard controls, smooth animations, and real-time participant data."
   },
   "developer": {
-    "name": "Keepit",
-    "website": "https://keepit.com",
+    "name": "vbe",
+    "websiteUrl": "https://keepit.com",
+    "privacyUrl": "https://keepit.com",
+    "termsOfUseUrl": "https://keepit.com",
     "mpnId": "1234567890"
   },
-  "configurableTabs": [
-    {
-      "configurationUrl": "https://{{DOMAIN}}/config",
-      "canUpdateConfiguration": true,
-      "scopes": ["team", "groupchat"],
-      "context": [
-        "channelTab",
-        "privateChatTab",
-        "meetingChatTab",
-        "meetingDetailsTab",
-        "meetingSidePanel",
-        "meetingStage"
-      ]
-    }
-  ],
   "permissions": [
-    "identity",
-    "messageTeamMembers"
+    "identity"
   ],
-  "webApplicationInfo": {
-    "id": "{{MICROSOFT_APP_ID}}",
-    "resource": "https://{{DOMAIN}}",
-    "applicationPermissions": [
-      "TeamsAppInstallation.Manage.Chat",
-      "TeamsAppInstallation.Manage.Group"
-    ]
-  },
   "validDomains": [
-    "{{DOMAIN}}"
+    "localhost",
+    "*.ngrok.io"
   ],
-  "accentColor": "#0c5cf5",
-  "isValidDomainWildcard": false
+  "accentColor": "#0c5cf5"
 }

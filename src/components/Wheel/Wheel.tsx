@@ -25,9 +25,16 @@ export const Wheel: React.FC<WheelProps> = ({
   const [winner, setWinner] = useState<{ participant: Participant; index: number } | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
+  const rotationRef = useRef(0);
+  const svgRef = useRef<SVGSVGElement | null>(null);
 
   const segmentCount = Math.max(participants.length, 1);
   const segmentAngle = 360 / segmentCount;
+
+  // Update rotation ref whenever rotation state changes
+  useEffect(() => {
+    rotationRef.current = rotation;
+  }, [rotation]);
 
   // Keyboard control (spacebar to spin)
   useEffect(() => {
@@ -44,7 +51,7 @@ export const Wheel: React.FC<WheelProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSpinning, isDisabled, enableKeyboardControl]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const spin = async (): Promise<void> => {
+  const spin = (): void => {
     if (isSpinning || isDisabled || participants.length === 0) return;
 
     setIsSpinning(true);
@@ -52,25 +59,31 @@ export const Wheel: React.FC<WheelProps> = ({
 
     // Generate random offset (0-360 degrees) for variety
     const randomOffset = Math.random() * 360;
-    const targetRotation = rotation + calculateSpinRotation(spins, randomOffset);
+    const targetRotation = rotationRef.current + calculateSpinRotation(spins, randomOffset);
 
     startTimeRef.current = Date.now();
 
     const animate = (): void => {
-      if (!startTimeRef.current) return;
+      if (!startTimeRef.current || !svgRef.current) return;
 
       const elapsed = Date.now() - startTimeRef.current;
       const progress = Math.min(elapsed / spinDuration, 1);
       const easedProgress = easing.easeOut(progress);
 
-      const currentRotation = rotation + (targetRotation - rotation) * easedProgress;
-      setRotation(currentRotation);
+      const currentRotation = rotationRef.current + (targetRotation - rotationRef.current) * easedProgress;
+
+      // Update DOM directly for smooth animation
+      if (svgRef.current) {
+        svgRef.current.style.transform = `rotate(${currentRotation}deg)`;
+      }
 
       if (progress < 1) {
         animationFrameRef.current = requestAnimationFrame(animate);
       } else {
         // Animation complete
+        rotationRef.current = targetRotation;
         setRotation(targetRotation);
+
         const winnerIndex = detectWinner(targetRotation, segmentCount);
         const winnerParticipant = participants[winnerIndex];
 
@@ -106,6 +119,7 @@ export const Wheel: React.FC<WheelProps> = ({
     <div className="wheel-container">
       <div className="wheel-wrapper">
         <svg
+          ref={svgRef}
           viewBox="0 0 320 320"
           className={`wheel ${isSpinning ? 'spinning' : ''} ${winner ? 'winner' : ''}`}
           style={{ transform: `rotate(${rotation}deg)` }}
