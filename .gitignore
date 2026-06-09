@@ -8,7 +8,6 @@ yarn-error.log
 pnpm-lock.yaml
 
 # Build outputs
-dist/*
 build
 .next
 out
