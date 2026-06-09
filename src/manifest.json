@@ -25,9 +25,10 @@
   "permissions": [
     "identity"
   ],
-  "validDomains": [
-    "localhost",
-    "*.ngrok.io"
-  ],
-  "accentColor": "#0c5cf5"
+  "validDomains": ["username.github.io"],
+  "accentColor": "#0c5cf5",
+  "webApplicationInfo": {
+    "id": "12345678-1234-1234-1234-123456789012",
+    "resource": "https://vbekeepit.github.io/wheelofnames/"
+  }
 }

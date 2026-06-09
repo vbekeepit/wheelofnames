@@ -11,11 +11,10 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    open: true,
-    https: false,
+    open: true
   },
   build: {
-    outDir: 'dist',
+    outDir: 'docs',
     sourcemap: true,
     minify: 'terser',
   },
