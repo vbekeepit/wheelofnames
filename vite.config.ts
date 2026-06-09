@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
+  base: '/wheelofnames/',
   plugins: [react()],
   resolve: {
     alias: {
@@ -14,7 +15,7 @@ export default defineConfig({
     open: true
   },
   build: {
-    outDir: 'docs',
+    outDir: 'dist',
     sourcemap: true,
     minify: 'terser',
   },
