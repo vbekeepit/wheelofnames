@@ -80,15 +80,7 @@ See [CLAUDE.md](./CLAUDE.md) for detailed architecture and development guidance.
 - **TypeScript** — Type safety
 - **Vite** — Build tool
 - **TeamsJS v2** — Teams platform integration
-- **KES UI** — Design system components
 - **Jest** — Unit testing
-
-## Development Guidelines
-
-- Strict TypeScript with no `any`
-- Components follow KES design patterns
-- Tests required for new features (>80% coverage)
-- Use CSS custom properties from KES design tokens
 
 ## Troubleshooting
 
@@ -107,4 +99,3 @@ See [CLAUDE.md](./CLAUDE.md) for detailed architecture and development guidance.
 
 - [CLAUDE.md](./CLAUDE.md) — Development guidance
 - [Microsoft Teams SDK](https://learn.microsoft.com/en-us/javascript/api/@microsoft/teams-js/)
-- [KES Design System](https://keepit.supernova-docs.io/)

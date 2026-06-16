@@ -7,8 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Spin the Wheel** is a Microsoft Teams meeting app that allows users to randomly select meeting participants using an interactive spinning wheel. The app extracts all meeting participants, populates a wheel with their names, and provides a smooth spinning animation to select one participant.
 
 - **Target platform**: Microsoft Teams (meeting tabs, side panels, stage)
-- **Tech stack**: React 19, TypeScript, TeamsJS v2, KES UI components
-- **Design system**: KES (Keepit Experience System) design tokens and components
+- **Tech stack**: React 19, TypeScript, TeamsJS v2
 - **Optional real-time sync**: Live Share SDK for cross-participant synchronization
 
 ## Implementation Phases
@@ -25,6 +24,7 @@ This project follows a 6-phase implementation plan:
 ## Common Development Commands
 
 ### Setup & Installation
+
 ```bash
 npm install                           # Install dependencies
 npm run dev                           # Start dev server (Vite with hot reload)
@@ -33,12 +33,14 @@ npm run typecheck                     # TypeScript type checking
 ```
 
 ### Development
+
 ```bash
 npm run dev                           # Dev server (typically http://localhost:5173)
 npm run preview                       # Preview production build locally
 ```
 
 ### Testing
+
 ```bash
 npm test                              # Run unit tests (Jest)
 npm run test:watch                    # Watch mode
@@ -46,6 +48,7 @@ npm run test:coverage                 # Coverage report
 ```
 
 ### Code Quality
+
 ```bash
 npx eslint src                        # Lint TypeScript/JavaScript
 npx prettier src --write              # Format code
@@ -105,11 +108,13 @@ server/                               # (Phase 4+) Bot service for TeamsInfo API
 ## Key Architecture Patterns
 
 ### 1. Teams Context Initialization
+
 The app initializes TeamsJS on mount in `App.tsx`:
+
 ```typescript
 useEffect(() => {
   app.initialize().then(() => {
-    app.getContext().then(context => {
+    app.getContext().then((context) => {
       // Use context: meeting.id, user.id, user.tenant.id
     });
   });
@@ -117,6 +122,7 @@ useEffect(() => {
 ```
 
 ### 2. Participant Data Flow
+
 ```
 useMeetingContext() → get meeting.id, user.id, tenant.id
   ↓
@@ -126,12 +132,14 @@ useParticipants(meetingId, userId, tenantId) → fetch participant list
 ```
 
 ### 3. Wheel Spinning Logic
+
 - **SVG-based rendering**: Segments calculated by participant count and rotation angle
 - **Animation**: Rollup rotation with easing (ease-out preferred for natural deceleration)
 - **Winner detection**: Calculate which segment lands at the top pointer after spin
 - **State management**: React hooks (useState for wheel rotation, isSpinning)
 
 ### 4. Real-time Sync (Phase 5)
+
 - **Live Share SDK**: Distributed lock to prevent concurrent spins
 - **Spin coordination**: Server-seeded randomization for deterministic results
 - **Participant updates**: Listen to meeting events (participantJoined/Left) and debounce wheel updates
@@ -139,6 +147,7 @@ useParticipants(meetingId, userId, tenantId) → fetch participant list
 ## Data Types
 
 ### Participant
+
 ```typescript
 interface Participant {
   id: string;
@@ -150,6 +159,7 @@ interface Participant {
 ```
 
 ### Meeting Context (from TeamsJS)
+
 ```typescript
 interface MeetingContext {
   meetingId: string;
@@ -166,6 +176,7 @@ interface MeetingContext {
 ## Teams Manifest Configuration
 
 Key manifest settings (`public/manifest.json`):
+
 - **Configurable tabs**: enabled for meeting context (meetingDetailsTab, meetingSidePanel, meetingStage)
 - **Permissions**: identity, messageTeamMembers
 - **Web app info**: Microsoft Entra ID app registration ID
@@ -174,6 +185,7 @@ Key manifest settings (`public/manifest.json`):
 ## Critical APIs & Integration Points
 
 ### TeamsJS (App Context)
+
 ```typescript
 import { app } from '@microsoft/teams-js';
 
@@ -183,26 +195,31 @@ app.registerOnThemeChangeHandler((theme) => {...}); // Handle theme changes
 ```
 
 ### Participant Data (Hybrid Approach)
+
 - **Primary**: Microsoft Graph API endpoint for complete roster (if auth available)
 - **Fallback**: Bot Framework `TeamsInfo.getMeetingParticipant()` for individual lookups
 - **Limitation**: Bot API limited to <350 participants per meeting
 
 ### Real-time Updates (Phase 5)
+
 - **Live Share SDK** for distributed state synchronization across meeting participants
 - **Meeting bot events** for participant join/leave notifications
 
 ## Testing Strategy
 
 ### Unit Tests (Jest)
+
 - **Wheel animation logic**: Verify rotation calculations, winner selection
 - **Hooks**: Test useMeetingContext, useParticipants with mocked Teams context
 - **Components**: Snapshot tests for rendering, prop changes
 
 ### Integration Tests
+
 - **Teams context flow**: Mock `app.getContext()` and verify component renders
 - **Participant list fetch**: Mock bot API and verify wheel population
 
 ### Manual Testing
+
 - Use Teams desktop/web app with a real meeting
 - Test with various participant counts (10, 50, 100, 300+)
 - Verify theme switching (light/dark/glass/contrast)
@@ -211,23 +228,27 @@ app.registerOnThemeChangeHandler((theme) => {...}); // Handle theme changes
 ## Build & Deployment
 
 ### Development
+
 ```bash
 npm run dev              # Vite dev server with hot reload
 ```
 
 ### Production
+
 ```bash
 npm run build            # Build to dist/ folder
 npm run preview          # Test production build locally
 ```
 
 ### Teams Deployment
+
 1. Build the app: `npm run build`
 2. Host the dist/ folder on a web server (Azure Static Web Apps, Azure App Service, etc.)
 3. Package Teams app: Create `.zip` with `manifest.json`, `icon-color.png`, `icon-outline.png`
 4. Sideload or publish to Teams app catalog
 
 ### CI/CD (GitHub Actions)
+
 - Auto-build on push to main branch
 - Run tests and type checking
 - Deploy to staging/production environments
@@ -238,7 +259,6 @@ npm run preview          # Test production build locally
 - **@microsoft/live-share** (v0.9+) — Real-time synchronization
 - **React** (v19) — UI framework
 - **TypeScript** (v5.9+) — Type safety
-- **@keepit/ui-custom-components** — KES design system components
 - **Vite** — Build tool (fast dev server)
 - **Jest** — Unit testing
 - **Storybook** (optional) — Component development
@@ -246,16 +266,11 @@ npm run preview          # Test production build locally
 ## Theme Integration
 
 The app respects Teams' light/dark/glass/contrast themes via TeamsJS:
+
 ```typescript
 app.registerOnThemeChangeHandler((theme) => {
   document.documentElement.setAttribute('data-teams-theme', theme);
 });
-```
-
-Use CSS custom properties from KES:
-```css
-background-color: var(--color-background-primary);
-color: var(--color-text-primary);
 ```
 
 ## Error Handling & Graceful Degradation
@@ -274,7 +289,6 @@ color: var(--color-text-primary);
 4. **Spin locking**: Use Live Share distributed locks, not just local state
 5. **Winner announcement**: Broadcast to all participants, not just the person who clicked "Spin"
 6. **Theme colors**: Always fallback to accessible defaults if CSS variables unavailable
-7. **Icon generation**: KES icons from `@keepit/ui-custom-components/icons/*`
 
 ## Development Tips
 
@@ -288,6 +302,5 @@ color: var(--color-text-primary);
 - **Implementation Plan**: See root project notes for 6-phase breakdown
 - **Teams JS SDK**: https://learn.microsoft.com/en-us/javascript/api/@microsoft/teams-js/
 - **React Aria**: https://react-spectrum.adobe.com/react-aria/components.html
-- **KES Design System**: [Figma](https://www.figma.com/files/1173964848701545203/project/73353638/Library)
 - **Live Share SDK**: https://learn.microsoft.com/en-us/javascript/api/@microsoft/live-share/
 - **Microsoft Graph API**: https://learn.microsoft.com/en-us/graph/api/
