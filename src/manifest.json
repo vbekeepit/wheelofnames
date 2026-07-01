@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.13/MicrosoftTeams.schema.json",
   "manifestVersion": "1.13",
   "id": "9fe75f29-6f00-4f57-a77c-30752247d60a",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": {
     "short": "The Keepit Roulette",
     "full": "The Keepit Roulette"
@@ -17,10 +17,10 @@
   },
   "accentColor": "#0c5cf5",
   "developer": {
-    "name": "Dev",
-    "websiteUrl": "https://example.com",
-    "privacyUrl": "https://example.com/privacy",
-    "termsOfUseUrl": "https://example.com/terms"
+    "name": "Keepit",
+    "websiteUrl": "https://vbekeepit.github.io/wheelofnames/",
+    "privacyUrl": "https://vbekeepit.github.io/wheelofnames/privacy/",
+    "termsOfUseUrl": "https://vbekeepit.github.io/wheelofnames/terms/"
   },
   "permissions": ["identity"],
   "validDomains": ["teams.microsoft.com"],
