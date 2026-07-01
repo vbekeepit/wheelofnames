@@ -4,12 +4,12 @@
   "id": "9fe75f29-6f00-4f57-a77c-30752247d60a",
   "version": "1.0.0",
   "name": {
-    "short": "Spin Wheel",
-    "full": "Spin Wheel"
+    "short": "The Keepit Roulette",
+    "full": "The Keepit Roulette"
   },
   "description": {
-    "short": "Select a participant with a wheel",
-    "full": "Select a participant with a wheel"
+    "short": "Spin the Keepit Roulette to pick a participant",
+    "full": "The Keepit Roulette — spin the wheel to randomly select a meeting participant. Fair, fun, and impossible to argue with."
   },
   "icons": {
     "color": "icon-color.png",
