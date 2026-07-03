@@ -12,7 +12,7 @@ export interface MeetingContext {
   userId: string;
   userDisplayName: string;
   tenantId: string;
-  frameContext: 'content' | 'sidePanel' | 'meetingStage' | 'meetingDetailsTab';
+  frameContext: 'content' | 'sidePanel' | 'meetingStage' | 'meetingDetailsTab' | 'settings';
   theme?: 'default' | 'dark' | 'light' | 'contrast';
   isReady: boolean;
   error?: string;

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "package": "rm -f spin-the-wheel.zip && zip -j -X spin-the-wheel.zip src/manifest.json public/icon-color.png public/icon-outline.png",
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",

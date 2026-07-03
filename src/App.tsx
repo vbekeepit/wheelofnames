@@ -24,6 +24,16 @@ export default function App() {
     );
   }
 
+  if (context?.frameContext === 'settings') {
+    return (
+      <div className="app-container">
+        <div className="loading">
+          <p>Ready — click <strong>Save</strong> to add Spin the Wheel to your meeting.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (contextError) {
     return (
       <div className="app-container">
