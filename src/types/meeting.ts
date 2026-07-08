@@ -30,4 +30,5 @@ export interface UseParticipantsResult {
   error: string | null;
   refetch: () => Promise<void>;
   selectFromPicker: () => Promise<void>;
+  setParticipants: (participants: Participant[]) => void;
 }

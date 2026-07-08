@@ -10,57 +10,65 @@ export interface WheelDisplayProps {
   isLoading?: boolean;
   error?: string | null;
   onSelectParticipants?: () => void;
+  onSetParticipants?: (participants: Participant[]) => void;
+}
+
+function parseNames(raw: string): Participant[] {
+  return raw
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .map((name, i) => ({ id: `manual-${i}`, displayName: name }));
 }
 
 export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   allParticipants,
   isLoading = false,
   error = null,
-  onSelectParticipants,
+  onSetParticipants,
 }) => {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
   const [showConfig, setShowConfig] = useState(false);
   const [winner, setWinner] = useState<Participant | null>(null);
+  const [nameInput, setNameInput] = useState(allParticipants.map((p) => p.displayName).join('\n'));
 
-  const handleWinnerSelected = (selectedWinner: Participant): void => {
-    setWinner(selectedWinner);
-  };
+  const handleWinnerSelected = (w: Participant) => setWinner(w);
+  const handleParticipantsChange = (p: Participant[]) => setSelectedParticipants(p);
+  const handleWinnerDismiss = () => setWinner(null);
 
-  const handleParticipantsChange = (participants: Participant[]): void => {
-    setSelectedParticipants(participants);
-  };
-
-  const handleWinnerDismiss = (): void => {
-    setWinner(null);
+  const handleAddNames = () => {
+    const parsed = parseNames(nameInput);
+    if (parsed.length > 0) onSetParticipants?.(parsed);
   };
 
   if (isLoading) {
-    return (
-      <div className="wheel-display loading">
-        <p>Loading meeting participants...</p>
-      </div>
-    );
+    return <div className="wheel-display loading"><p>Loading...</p></div>;
   }
 
   if (error) {
-    return (
-      <div className="wheel-display error">
-        <h2>Error</h2>
-        <p>{error}</p>
-      </div>
-    );
+    return <div className="wheel-display error"><h2>Error</h2><p>{error}</p></div>;
   }
 
   if (allParticipants.length === 0) {
     return (
       <div className="wheel-display empty">
-        <h2>No Participants</h2>
-        <p>Select the people you want to include in the wheel.</p>
-        {onSelectParticipants && (
-          <button className="select-participants-button" onClick={onSelectParticipants}>
-            Pick Participants
-          </button>
-        )}
+        <h2>Add participants</h2>
+        <p>Enter one name per line.</p>
+        <textarea
+          className="name-input"
+          rows={8}
+          placeholder={'Alice\nBob\nCarol'}
+          value={nameInput}
+          onChange={(e) => setNameInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter' && e.metaKey) handleAddNames(); }}
+        />
+        <button
+          className="select-participants-button"
+          onClick={handleAddNames}
+          disabled={nameInput.trim().length === 0}
+        >
+          Add to wheel
+        </button>
       </div>
     );
   }
@@ -70,7 +78,6 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   return (
     <div className="wheel-display">
       <div className="wheel-display-main">
-        {/* Control Button */}
         <div className="wheel-display-header">
           <button
             className="config-button"
@@ -82,7 +89,6 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
           <p className="wheel-hint">Press <kbd>Space</kbd> or click to spin</p>
         </div>
 
-        {/* Config Panel */}
         {showConfig && (
           <div className="wheel-display-config">
             <WheelConfig
@@ -94,7 +100,6 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
           </div>
         )}
 
-        {/* Wheel */}
         {!showConfig && (
           <div className="wheel-display-content">
             <Wheel
@@ -108,7 +113,6 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
         )}
       </div>
 
-      {/* Winner Announcement */}
       {winner && (
         <WinnerAnnouncement
           winner={winner}

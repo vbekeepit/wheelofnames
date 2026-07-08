@@ -5,7 +5,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function App() {
   const { context, isLoading: contextLoading, error: contextError } = useMeetingContext();
-  const { participants, isLoading: participantsLoading, error: participantsError, selectFromPicker } = useParticipants(
+  const { participants, isLoading: participantsLoading, error: participantsError, selectFromPicker, setParticipants } = useParticipants(
     context?.meetingId || '',
     context?.userId || '',
     context?.tenantId || ''
@@ -53,6 +53,7 @@ export default function App() {
               isLoading={participantsLoading}
               error={participantsError}
               onSelectParticipants={selectFromPicker}
+              onSetParticipants={setParticipants}
             />
           )}
         </main>
