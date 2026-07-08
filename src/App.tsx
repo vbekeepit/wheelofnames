@@ -34,18 +34,6 @@ export default function App() {
     );
   }
 
-  if (contextError) {
-    return (
-      <div className="app-container">
-        <div className="error">
-          <h2>Error</h2>
-          <p>{contextError}</p>
-          <p className="error-hint">This app requires Teams meeting context. Please open it from within a Teams meeting.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <ErrorBoundary>
       <div className={`app-container theme-${theme}`}>
@@ -58,14 +46,6 @@ export default function App() {
           {contextLoading ? (
             <div className="loading">
               <p>Initializing Teams context...</p>
-            </div>
-          ) : contextError ? (
-            <div className="error">
-              <h2>Unable to Initialize</h2>
-              <p>{contextError}</p>
-              <p className="error-hint">
-                This app requires Teams meeting context. Please open it from within a Teams meeting.
-              </p>
             </div>
           ) : (
             <WheelDisplay

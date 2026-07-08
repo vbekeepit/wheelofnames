@@ -15,18 +15,14 @@ export function useMeetingContext(): UseMeetingContextResult {
         setIsLoading(true);
         setError(null);
 
-        // Initialize TeamsJS
         await app.initialize();
-
-        // Get context from Teams
         const teamsContext = await app.getContext();
 
-        const frameContext = ((teamsContext.page?.frameContext as string) ?? 'content') as MeetingContext['frameContext'];
-
-        // In the tab configuration dialog, pages.config capability is supported.
-        // Use isSupported() rather than frameContext string — configurable tabs can
-        // report frameContext='settings' even when loading as sidePanel content.
-        if (pages.config.isSupported()) {
+        // Attempt to register tab configuration. pages.config APIs throw when
+        // called outside the settings context, so use try-catch as the definitive
+        // detector — isSupported() and frameContext are unreliable in sidePanel.
+        let registeredAsConfig = false;
+        try {
           await pages.config.setConfig({
             contentUrl: APP_URL,
             entityId: 'spin-the-wheel',
@@ -34,44 +30,27 @@ export function useMeetingContext(): UseMeetingContextResult {
             websiteUrl: APP_URL,
           });
           pages.config.setValidityState(true);
-
-          setContext({
-            meetingId: '',
-            meetingTitle: '',
-            userId: teamsContext.user?.id ?? '',
-            userDisplayName: teamsContext.user?.displayName ?? '',
-            tenantId: teamsContext.user?.tenant?.id ?? '',
-            frameContext: 'settings',
-            theme: (teamsContext.app?.theme ?? 'default') as MeetingContext['theme'],
-            isReady: true,
-          });
-          return;
+          registeredAsConfig = true;
+        } catch {
+          // Not in the settings context — proceed with normal meeting init
         }
 
-        // Validate required fields for non-config contexts
-        if (!teamsContext.meeting?.id) {
-          throw new Error('Meeting context not available. This app requires Teams meeting context.');
-        }
+        const frameContext = ((teamsContext.page?.frameContext as string) ?? 'sidePanel') as MeetingContext['frameContext'];
 
-        if (!teamsContext.user?.id) {
-          throw new Error('User context not available.');
-        }
-
-        // Normalize context
         const meetingContext: MeetingContext = {
-          meetingId: teamsContext.meeting.id,
-          meetingTitle: ((teamsContext.meeting as unknown) as Record<string, unknown>).title as string ?? '',
-          userId: teamsContext.user.id,
-          userDisplayName: teamsContext.user.displayName ?? '',
-          tenantId: teamsContext.user.tenant?.id ?? '',
-          frameContext,
-          theme: teamsContext.app.theme as MeetingContext['theme'],
+          // meeting.id is not always available; chat.id is the meeting thread fallback
+          meetingId: teamsContext.meeting?.id ?? teamsContext.chat?.id ?? '',
+          meetingTitle: ((teamsContext.meeting as unknown) as Record<string, unknown>)?.title as string ?? '',
+          userId: teamsContext.user?.id ?? '',
+          userDisplayName: teamsContext.user?.displayName ?? '',
+          tenantId: teamsContext.user?.tenant?.id ?? '',
+          frameContext: registeredAsConfig ? 'settings' : frameContext,
+          theme: (teamsContext.app?.theme ?? 'default') as MeetingContext['theme'],
           isReady: true,
         };
 
         setContext(meetingContext);
 
-        // Register theme change handler
         app.registerOnThemeChangeHandler((newTheme) => {
           setContext((prev) => (prev ? { ...prev, theme: newTheme as MeetingContext['theme'] } : null));
         });
@@ -79,23 +58,6 @@ export function useMeetingContext(): UseMeetingContextResult {
         const errorMessage = err instanceof Error ? err.message : 'Failed to initialize Teams context';
         setError(errorMessage);
         console.error('Teams context initialization error:', err);
-
-        // In development, create a mock context for testing
-        if (import.meta.env.DEV) {
-          console.warn('Using mock context for development');
-          const mockContext: MeetingContext = {
-            meetingId: 'mock-meeting-id',
-            meetingTitle: 'Test Meeting',
-            userId: 'mock-user-id',
-            userDisplayName: 'Test User',
-            tenantId: 'mock-tenant-id',
-            frameContext: 'sidePanel',
-            theme: 'default',
-            isReady: true,
-          };
-          setContext(mockContext);
-          setError(null);
-        }
       } finally {
         setIsLoading(false);
       }
