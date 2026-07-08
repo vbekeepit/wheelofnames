@@ -29,4 +29,5 @@ export interface UseParticipantsResult {
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+  selectFromPicker: () => Promise<void>;
 }

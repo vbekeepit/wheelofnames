@@ -9,12 +9,14 @@ export interface WheelDisplayProps {
   allParticipants: Participant[];
   isLoading?: boolean;
   error?: string | null;
+  onSelectParticipants?: () => void;
 }
 
 export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   allParticipants,
   isLoading = false,
   error = null,
+  onSelectParticipants,
 }) => {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
   const [showConfig, setShowConfig] = useState(false);
@@ -53,7 +55,12 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
     return (
       <div className="wheel-display empty">
         <h2>No Participants</h2>
-        <p>There are no meeting participants to spin the wheel with.</p>
+        <p>Select the people you want to include in the wheel.</p>
+        {onSelectParticipants && (
+          <button className="select-participants-button" onClick={onSelectParticipants}>
+            Pick Participants
+          </button>
+        )}
       </div>
     );
   }
