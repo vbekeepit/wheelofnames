@@ -25,6 +25,7 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   allParticipants,
   isLoading = false,
   error = null,
+  onSelectParticipants,
   onSetParticipants,
 }) => {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
