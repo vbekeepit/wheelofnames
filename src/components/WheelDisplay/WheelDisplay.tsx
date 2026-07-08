@@ -53,10 +53,19 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
     return (
       <div className="wheel-display empty">
         <h2>Add participants</h2>
-        <p>Enter one name per line.</p>
+        {onSelectParticipants && (
+          <>
+            <p>Pick directly from the meeting roster:</p>
+            <button className="select-participants-button" onClick={onSelectParticipants}>
+              Pick from meeting
+            </button>
+            <p className="empty-divider">or enter names manually:</p>
+          </>
+        )}
+        {!onSelectParticipants && <p>Enter one name per line.</p>}
         <textarea
           className="name-input"
-          rows={8}
+          rows={6}
           placeholder={'Alice\nBob\nCarol'}
           value={nameInput}
           onChange={(e) => setNameInput(e.target.value)}
