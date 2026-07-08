@@ -23,8 +23,10 @@ export function useMeetingContext(): UseMeetingContextResult {
 
         const frameContext = ((teamsContext.page?.frameContext as string) ?? 'content') as MeetingContext['frameContext'];
 
-        // In the tab configuration dialog, register tab settings and enable Save
-        if (frameContext === 'settings') {
+        // In the tab configuration dialog, pages.config capability is supported.
+        // Use isSupported() rather than frameContext string — configurable tabs can
+        // report frameContext='settings' even when loading as sidePanel content.
+        if (pages.config.isSupported()) {
           await pages.config.setConfig({
             contentUrl: APP_URL,
             entityId: 'spin-the-wheel',
