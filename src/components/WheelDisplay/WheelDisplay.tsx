@@ -88,13 +88,20 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
     <div className="wheel-display">
       <div className="wheel-display-main">
         <div className="wheel-display-header">
-          <button
-            className="config-button"
-            onClick={() => setShowConfig(!showConfig)}
-            aria-label={showConfig ? 'Hide participant settings' : 'Show participant settings'}
-          >
-            {showConfig ? '✓ Done' : '⚙️ Settings'}
-          </button>
+          <div className="wheel-display-header-buttons">
+            <button
+              className="config-button"
+              onClick={() => setShowConfig(!showConfig)}
+              aria-label={showConfig ? 'Hide participant settings' : 'Show participant settings'}
+            >
+              {showConfig ? '✓ Done' : '⚙️ Settings'}
+            </button>
+            {onSelectParticipants && (
+              <button className="picker-button" onClick={onSelectParticipants}>
+                👥 Pick from meeting
+              </button>
+            )}
+          </div>
           <p className="wheel-hint">Press <kbd>Space</kbd> or click to spin</p>
         </div>
 
