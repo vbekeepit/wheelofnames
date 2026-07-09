@@ -60,15 +60,17 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   return (
     <div className="wheel-display">
       <div className="wheel-display-main">
-        <div className="wheel-display-header">
-          <button
-            className="config-button"
-            onClick={() => setShowConfig(!showConfig)}
-            aria-label={showConfig ? 'Hide participant settings' : 'Show participant settings'}
-          >
-            {showConfig ? '✓ Done' : '⚙️ Settings'}
-          </button>
-        </div>
+        {!showConfig &&
+          <div className="wheel-display-header">
+            <button
+              className="config-button"
+              onClick={() => setShowConfig(!showConfig)}
+              aria-label={showConfig ? 'Hide participant settings' : 'Show participant settings'}
+            >
+              {'⚙️ Settings'}
+            </button>
+          </div>
+        }
 
         {showConfig && (
           <div className="wheel-display-config">
