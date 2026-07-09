@@ -10,15 +10,6 @@ export interface WheelDisplayProps {
   isLoading?: boolean;
   error?: string | null;
   onSelectParticipants?: () => void;
-  onSetParticipants?: (participants: Participant[]) => void;
-}
-
-function parseNames(raw: string): Participant[] {
-  return raw
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0)
-    .map((name, i) => ({ id: `manual-${i}`, displayName: name }));
 }
 
 export const WheelDisplay: React.FC<WheelDisplayProps> = ({
@@ -26,21 +17,14 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   isLoading = false,
   error = null,
   onSelectParticipants,
-  onSetParticipants,
 }) => {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
   const [showConfig, setShowConfig] = useState(false);
   const [winner, setWinner] = useState<Participant | null>(null);
-  const [nameInput, setNameInput] = useState(allParticipants.map((p) => p.displayName).join('\n'));
 
   const handleWinnerSelected = (w: Participant) => setWinner(w);
   const handleParticipantsChange = (p: Participant[]) => setSelectedParticipants(p);
   const handleWinnerDismiss = () => setWinner(null);
-
-  const handleAddNames = () => {
-    const parsed = parseNames(nameInput);
-    if (parsed.length > 0) onSetParticipants?.(parsed);
-  };
 
   if (isLoading) {
     return <div className="wheel-display loading"><p>Loading...</p></div>;
@@ -53,32 +37,17 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   if (allParticipants.length === 0) {
     return (
       <div className="wheel-display empty">
-        <h2>Add participants</h2>
-        {onSelectParticipants && (
+        <h2>No participants yet</h2>
+        {onSelectParticipants ? (
           <>
-            <p>Pick directly from the meeting roster:</p>
+            <p>Pick people from the meeting roster to spin the wheel.</p>
             <button className="select-participants-button" onClick={onSelectParticipants}>
               Pick from meeting
             </button>
-            <p className="empty-divider">or enter names manually:</p>
           </>
+        ) : (
+          <p>Open this app inside a Teams meeting to get started.</p>
         )}
-        {!onSelectParticipants && <p>Enter one name per line.</p>}
-        <textarea
-          className="name-input"
-          rows={6}
-          placeholder={'Alice\nBob\nCarol'}
-          value={nameInput}
-          onChange={(e) => setNameInput(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter' && e.metaKey) handleAddNames(); }}
-        />
-        <button
-          className="select-participants-button"
-          onClick={handleAddNames}
-          disabled={nameInput.trim().length === 0}
-        >
-          Add to wheel
-        </button>
       </div>
     );
   }
