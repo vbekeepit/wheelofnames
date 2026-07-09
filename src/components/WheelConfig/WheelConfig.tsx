@@ -8,6 +8,7 @@ export interface WheelConfigProps {
   onParticipantsChange: (participants: Participant[]) => void;
   onClose?: () => void;
   onSelectParticipants?: () => void;
+  onClearParticipants?: () => void;
 }
 
 export const WheelConfig: React.FC<WheelConfigProps> = ({
@@ -16,6 +17,7 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
   onParticipantsChange,
   onClose,
   onSelectParticipants,
+  onClearParticipants,
 }) => {
   const toggleParticipant = (participant: Participant): void => {
     const isSelected = selectedParticipants.some((p) => p.id === participant.id);
@@ -53,6 +55,11 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
         {onSelectParticipants && (
           <button className="pick-button" onClick={onSelectParticipants}>
             👥 Pick from meeting
+          </button>
+        )}
+        {onClearParticipants && allParticipants.length > 0 && (
+          <button className="clear-button" onClick={onClearParticipants}>
+            🗑 Clear list
           </button>
         )}
 

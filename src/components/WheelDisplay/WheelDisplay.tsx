@@ -10,6 +10,7 @@ export interface WheelDisplayProps {
   isLoading?: boolean;
   error?: string | null;
   onSelectParticipants?: () => void;
+  onClearParticipants?: () => void;
 }
 
 export const WheelDisplay: React.FC<WheelDisplayProps> = ({
@@ -17,6 +18,7 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   isLoading = false,
   error = null,
   onSelectParticipants,
+  onClearParticipants,
 }) => {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
   const [showConfig, setShowConfig] = useState(false);
@@ -25,6 +27,7 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   const handleWinnerSelected = (w: Participant) => setWinner(w);
   const handleParticipantsChange = (p: Participant[]) => setSelectedParticipants(p);
   const handleWinnerDismiss = () => setWinner(null);
+  const handleClear = () => { setSelectedParticipants([]); onClearParticipants?.(); };
 
   if (isLoading) {
     return <div className="wheel-display loading"><p>Loading...</p></div>;
@@ -75,6 +78,7 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
               onParticipantsChange={handleParticipantsChange}
               onClose={() => setShowConfig(false)}
               onSelectParticipants={onSelectParticipants}
+              onClearParticipants={handleClear}
             />
           </div>
         )}

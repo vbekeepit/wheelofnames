@@ -72,6 +72,24 @@
   color: white;
 }
 
+.clear-button {
+  width: 100%;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid #c33;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #c33;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-button:hover {
+  background-color: #c33;
+  color: white;
+}
+
 /* Quick actions */
 .quick-actions {
   display: flex;

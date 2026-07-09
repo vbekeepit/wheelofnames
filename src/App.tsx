@@ -5,7 +5,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function App() {
   const { context, isLoading: contextLoading, error: contextError } = useMeetingContext();
-  const { participants, isLoading: participantsLoading, error: participantsError, selectFromPicker } = useParticipants(
+  const { participants, isLoading: participantsLoading, error: participantsError, selectFromPicker, setParticipants } = useParticipants(
     context?.meetingId || '',
     context?.userId || '',
     context?.tenantId || ''
@@ -53,12 +53,12 @@ export default function App() {
               isLoading={participantsLoading}
               error={participantsError}
               onSelectParticipants={selectFromPicker}
+              onClearParticipants={() => setParticipants([])}
             />
           )}
         </main>
 
         <footer className="app-footer">
-          <p className="phase-indicator">Phase 4: Teams Integration</p>
           {participants.length > 0 && (
             <p className="participant-count">
               {participants.length} participant{participants.length !== 1 ? 's' : ''} loaded
