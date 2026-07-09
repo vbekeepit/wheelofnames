@@ -62,23 +62,23 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
             🗑 Clear list
           </button>
         )}
-
-        {/* Quick actions */}
         <div className="quick-actions">
-          <button
-            className="action-button action-all"
-            onClick={selectAll}
-            disabled={selectedIds.size === allParticipants.length}
-          >
-            Select All
-          </button>
-          <button
-            className="action-button action-none"
-            onClick={deselectAll}
-            disabled={selectedIds.size === 0}
-          >
-            Deselect All
-          </button>
+          {selectedIds.size !== allParticipants.length && 
+            <button
+              className="action-button action-all"
+              onClick={selectAll}
+            >
+              Select All
+            </button>
+          }
+          {selectedIds.size > 0 && 
+            <button
+              className="action-button action-none"
+              onClick={deselectAll}
+            >
+              Deselect All
+            </button>
+          }
           <span className="selection-count">
             {selectedIds.size} of {allParticipants.length} selected
           </span>

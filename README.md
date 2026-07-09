@@ -63,17 +63,6 @@ src/
 └── main.tsx          # Entry point
 ```
 
-## Implementation Phases
-
-1. **Phase 1** (Current) — Foundation & context access
-2. **Phase 2** — Wheel UI component
-3. **Phase 3** — Animation & interaction
-4. **Phase 4** — Teams integration with real participant data
-5. **Phase 5** — Real-time synchronization
-6. **Phase 6** — Polish & deployment
-
-See [CLAUDE.md](./CLAUDE.md) for detailed architecture and development guidance.
-
 ## Technologies
 
 - **React 19** — UI framework

@@ -308,16 +308,6 @@ export const Wheel: React.FC<WheelProps> = ({
           style={{ cursor: isSpinning || isDisabled ? 'default' : 'pointer' }}
         />
       </div>
-
-      <div className="wheel-controls">
-        <button
-          className="spin-button"
-          onClick={spin}
-          disabled={isSpinning || isDisabled || participants.length === 0}
-        >
-          {isSpinning ? 'Spinning…' : 'Spin the Wheel'}
-        </button>
-      </div>
     </div>
   );
 };
