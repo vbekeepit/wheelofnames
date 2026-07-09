@@ -4,14 +4,13 @@
   align-items: center;
   gap: 1.5rem;
   padding: 1.5rem 1rem;
-  background: #060F0A;
   border-radius: 12px;
   width: 100%;
 }
 
 .wheel-wrapper {
   position: relative;
-  width: min(320px, 90vw);
+  width: 100%;
   aspect-ratio: 1;
 }
 
