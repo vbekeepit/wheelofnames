@@ -52,14 +52,15 @@ export const WinnerAnnouncement: React.FC<WinnerAnnouncementProps> = ({
 
         <p className="wa-message">{message}</p>
 
-        <p className="wa-name" aria-live="assertive">{winner.displayName}</p>
+        <p className="wa-name" aria-live="assertive">{winner.displayName.replace(' | Keepit', '')}</p>
 
         {winner.participantRole && (
           <p className="wa-role">{winner.participantRole}</p>
         )}
 
+        <br />
         <button className="wa-button" onClick={handleDismiss}>
-          Spin Again
+          Close
         </button>
       </div>
     </div>
