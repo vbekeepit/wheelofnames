@@ -44,6 +44,7 @@ export function useMeetingContext(): UseMeetingContextResult {
           userId: teamsContext.user?.id ?? '',
           userDisplayName: teamsContext.user?.displayName ?? '',
           tenantId: teamsContext.user?.tenant?.id ?? '',
+          chatId: teamsContext.chat?.id,
           frameContext: registeredAsConfig ? 'settings' : frameContext,
           theme: (teamsContext.app?.theme ?? 'default') as MeetingContext['theme'],
           isReady: true,

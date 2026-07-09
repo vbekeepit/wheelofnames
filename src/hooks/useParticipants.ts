@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { dialog } from '@microsoft/teams-js';
 import type { PeoplePickerResult } from '@microsoft/teams-js';
 import type { Participant, UseParticipantsResult } from '@/types/meeting';
+import { getGraphToken } from '@/services/authService';
+import { getMeetingMembers } from '@/services/graphService';
 
 const STORAGE_KEY = 'spin-the-wheel:participants';
 const PICKER_URL = 'https://vbekeepit.github.io/wheelofnames/?mode=picker';
@@ -30,7 +32,8 @@ export interface UseParticipantsOptions {
 export function useParticipants(
   _meetingId: string,
   _userId: string,
-  _tenantId: string,
+  tenantId: string,
+  chatId: string,
   _options: UseParticipantsOptions = {}
 ): UseParticipantsResult {
   const [participants, setParticipantsState] = useState<Participant[]>(load);
@@ -90,9 +93,31 @@ export function useParticipants(
     });
   };
 
+  const fetchFromMeeting = async (): Promise<void> => {
+    if (!chatId) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const token = await getGraphToken(tenantId);
+      const fetched = await getMeetingMembers(chatId, token);
+      if (fetched.length > 0) {
+        setParticipantsState((prev) => {
+          const existingIds = new Set(prev.map((p) => p.id));
+          const merged = [...prev, ...fetched.filter((p) => !existingIds.has(p.id))];
+          save(merged);
+          return merged;
+        });
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load meeting participants');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const refetch = async (): Promise<void> => {
     setParticipantsState(load());
   };
 
-  return { participants, isLoading, error, refetch, selectFromPicker, setParticipants };
+  return { participants, isLoading, error, refetch, selectFromPicker, fetchFromMeeting, setParticipants };
 }

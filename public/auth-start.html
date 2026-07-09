@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Signing in…</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #060f0a;
+      color: #4de8a0;
+      text-align: center;
+      padding: 3rem 1rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <p>Signing in to Microsoft 365…</p>
+  <script src="https://unpkg.com/@azure/msal-browser@2.38.3/dist/msal-browser.min.js"></script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var tenantId = params.get('tenantId') || 'common';
+
+      // Persist for auth-end.html (same window, same sessionStorage)
+      sessionStorage.setItem('spin-wheel:tenantId', tenantId);
+
+      var msalConfig = {
+        auth: {
+          clientId: '9fe75f29-6f00-4f57-a77c-30752247d60a',
+          authority: 'https://login.microsoftonline.com/' + tenantId,
+          redirectUri: 'https://vbekeepit.github.io/wheelofnames/auth-end.html',
+          navigateToLoginRequestUrl: false,
+        },
+        cache: {
+          cacheLocation: 'sessionStorage',
+          storeAuthStateInCookie: false,
+        },
+      };
+
+      var msalInstance = new msal.PublicClientApplication(msalConfig);
+
+      msalInstance.handleRedirectPromise()
+        .then(function (response) {
+          if (response) return; // already handled
+          msalInstance.loginRedirect({ scopes: ['Chat.ReadBasic'] });
+        })
+        .catch(function (err) {
+          console.error('MSAL error in auth-start:', err);
+        });
+    })();
+  </script>
+</body>
+</html>

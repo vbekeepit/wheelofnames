@@ -12,6 +12,7 @@ export interface MeetingContext {
   userId: string;
   userDisplayName: string;
   tenantId: string;
+  chatId?: string;
   frameContext: 'content' | 'sidePanel' | 'meetingStage' | 'meetingDetailsTab' | 'settings';
   theme?: 'default' | 'dark' | 'light' | 'contrast';
   isReady: boolean;
@@ -30,5 +31,6 @@ export interface UseParticipantsResult {
   error: string | null;
   refetch: () => Promise<void>;
   selectFromPicker: () => Promise<void>;
+  fetchFromMeeting: () => Promise<void>;
   setParticipants: (participants: Participant[]) => void;
 }

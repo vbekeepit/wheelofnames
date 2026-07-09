@@ -8,6 +8,7 @@ export interface WheelConfigProps {
   onParticipantsChange: (participants: Participant[]) => void;
   onClose?: () => void;
   onSelectParticipants?: () => void;
+  onReloadFromMeeting?: () => Promise<void>;
   onClearParticipants?: () => void;
 }
 
@@ -17,6 +18,7 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
   onParticipantsChange,
   onClose,
   onSelectParticipants,
+  onReloadFromMeeting,
   onClearParticipants,
 }) => {
   const toggleParticipant = (participant: Participant): void => {
@@ -106,6 +108,11 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
       {/* Footer with confirmation */}
       <div className="config-footer">
         <div className="config-actions">
+          {onReloadFromMeeting && (
+            <button className="pick-button" onClick={onReloadFromMeeting}>
+              🔄 Reload from meeting
+            </button>
+          )}
           {onSelectParticipants && (
             <button className="pick-button" onClick={onSelectParticipants}>
               👥 Pick from meeting

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useMeetingContext } from '@/hooks/useMeetingContext';
 import { useParticipants } from '@/hooks/useParticipants';
 import { WheelDisplay } from '@/components/WheelDisplay';
@@ -5,11 +6,27 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function App() {
   const { context, isLoading: contextLoading, error: contextError } = useMeetingContext();
-  const { participants, isLoading: participantsLoading, error: participantsError, selectFromPicker, setParticipants } = useParticipants(
+  const {
+    participants,
+    isLoading: participantsLoading,
+    error: participantsError,
+    selectFromPicker,
+    fetchFromMeeting,
+    setParticipants,
+  } = useParticipants(
     context?.meetingId || '',
     context?.userId || '',
-    context?.tenantId || ''
+    context?.tenantId || '',
+    context?.chatId || '',
   );
+
+  // Auto-load from Graph on first open when meeting roster is empty
+  useEffect(() => {
+    if (context?.chatId && participants.length === 0) {
+      fetchFromMeeting().catch(() => {}); // Silent fail — picker is still available
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context?.chatId]);
 
   // Determine theme from context
   const theme = context?.theme || 'default';
@@ -52,6 +69,7 @@ export default function App() {
               isLoading={participantsLoading}
               error={participantsError}
               onSelectParticipants={selectFromPicker}
+              onReloadFromMeeting={context?.chatId ? fetchFromMeeting : undefined}
               onClearParticipants={() => setParticipants([])}
             />
           )}

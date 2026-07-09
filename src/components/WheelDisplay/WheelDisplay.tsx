@@ -10,6 +10,7 @@ export interface WheelDisplayProps {
   isLoading?: boolean;
   error?: string | null;
   onSelectParticipants?: () => void;
+  onReloadFromMeeting?: () => Promise<void>;
   onClearParticipants?: () => void;
 }
 
@@ -18,6 +19,7 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   isLoading = false,
   error = null,
   onSelectParticipants,
+  onReloadFromMeeting,
   onClearParticipants,
 }) => {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
@@ -68,6 +70,7 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
               onParticipantsChange={handleParticipantsChange}
               onClose={() => setShowConfig(false)}
               onSelectParticipants={onSelectParticipants}
+              onReloadFromMeeting={onReloadFromMeeting}
               onClearParticipants={handleClear}
             />
           </div>

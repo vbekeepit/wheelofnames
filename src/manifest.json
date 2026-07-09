@@ -22,6 +22,10 @@
     "privacyUrl": "https://vbekeepit.github.io/wheelofnames/privacy/",
     "termsOfUseUrl": "https://vbekeepit.github.io/wheelofnames/terms/"
   },
+  "webApplicationInfo": {
+    "id": "9fe75f29-6f00-4f57-a77c-30752247d60a",
+    "resource": "api://vbekeepit.github.io/wheelofnames/9fe75f29-6f00-4f57-a77c-30752247d60a"
+  },
   "permissions": ["identity"],
   "validDomains": ["vbekeepit.github.io"],
   "configurableTabs": [
