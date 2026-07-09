@@ -27,6 +27,16 @@
   --border-color: #404040;
 }
 
+@media (prefers-color-scheme: dark) {
+  .app-container.theme-default {
+    --bg-primary: #1f1f1f;
+    --bg-secondary: #2a2a2a;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+  }
+}
+
 .app-container.theme-contrast {
   --bg-primary: #ffffff;
   --bg-secondary: #000000;
