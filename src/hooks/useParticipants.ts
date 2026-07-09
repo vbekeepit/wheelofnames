@@ -78,7 +78,12 @@ export function useParticipants(
             displayName: p.displayName ?? p.email ?? p.objectId,
             email: p.email,
           }));
-          setParticipants(mapped);
+          setParticipantsState((prev) => {
+            const existingIds = new Set(prev.map((p) => p.id));
+            const merged = [...prev, ...mapped.filter((p) => !existingIds.has(p.id))];
+            save(merged);
+            return merged;
+          });
           resolve();
         }
       );
