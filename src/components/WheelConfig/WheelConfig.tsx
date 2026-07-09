@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { Participant } from '@/types/meeting';
 import './WheelConfig.css';
 
@@ -7,6 +7,7 @@ export interface WheelConfigProps {
   selectedParticipants: Participant[];
   onParticipantsChange: (participants: Participant[]) => void;
   onClose?: () => void;
+  onSelectParticipants?: () => void;
 }
 
 export const WheelConfig: React.FC<WheelConfigProps> = ({
@@ -14,14 +15,8 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
   selectedParticipants,
   onParticipantsChange,
   onClose,
+  onSelectParticipants,
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredParticipants = allParticipants.filter((p) =>
-    p.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (p.email?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
-  );
-
   const toggleParticipant = (participant: Participant): void => {
     const isSelected = selectedParticipants.some((p) => p.id === participant.id);
 
@@ -54,17 +49,12 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
       </div>
 
       <div className="config-content">
-        {/* Search */}
-        <div className="search-section">
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search participants..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            aria-label="Search participants"
-          />
-        </div>
+        {/* Pick from meeting */}
+        {onSelectParticipants && (
+          <button className="pick-button" onClick={onSelectParticipants}>
+            👥 Pick from meeting
+          </button>
+        )}
 
         {/* Quick actions */}
         <div className="quick-actions">
@@ -89,9 +79,9 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
 
         {/* Participant list */}
         <div className="participants-section">
-          {filteredParticipants.length > 0 ? (
+          {allParticipants.length > 0 ? (
             <div className="participants-grid">
-              {filteredParticipants.map((participant) => (
+              {allParticipants.map((participant) => (
                 <label key={participant.id} className="participant-checkbox">
                   <input
                     type="checkbox"
@@ -111,7 +101,7 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
             </div>
           ) : (
             <div className="no-results">
-              <p>No participants found matching "{searchTerm}"</p>
+              <p>No participants loaded yet.</p>
             </div>
           )}
         </div>
