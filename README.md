@@ -71,6 +71,45 @@ src/
 - **TeamsJS v2** — Teams platform integration
 - **Jest** — Unit testing
 
+## Azure App Registration Setup (required for auto-detecting meeting participants)
+
+The app uses Microsoft Graph to automatically load participants from the current Teams meeting.
+This requires a one-time Azure AD app registration by someone with access to the Keepit Entra ID tenant.
+
+### Steps
+
+1. Go to [Azure Portal](https://portal.azure.com) → **Microsoft Entra ID** → **App registrations** → **New registration**
+
+2. Fill in:
+   - **Name**: `The Keepit Roulette`
+   - **Supported account types**: `Single tenant only - Keepit AS`
+   - **Redirect URI**: Platform = **Single-page application (SPA)**, URI = `https://vbekeepit.github.io/wheelofnames/auth-end.html`
+
+3. Click **Register**. From the overview page, copy:
+   - **Application (client) ID**
+   - **Directory (tenant) ID**
+
+4. Go to **API permissions** → **Add a permission** → **Microsoft Graph** → **Delegated permissions**
+   - Search for and add: `Chat.ReadBasic`
+   - No admin consent needed — each user consents on first login
+
+5. Update the code with the new IDs (two places):
+   - `src/manifest.json` → `webApplicationInfo.id` and the `resource` URL (replace the client ID in both)
+   - `public/auth-start.html` and `public/auth-end.html` → `clientId` value in the MSAL config block
+   - `public/auth-start.html` and `public/auth-end.html` → `authority` URL (replace `common` with the tenant ID)
+
+6. Update `src/services/authService.ts` → `AUTH_START_URL` if the domain changes
+
+7. Run `npm run deploy` and push to GitHub Pages
+
+### How it works
+
+- On first open inside a Teams meeting, the app opens a Microsoft login popup (once per user)
+- The user consents to `Chat.ReadBasic` — allows reading who is in the current chat/meeting
+- The roster loads automatically. On subsequent opens the token is cached — no popup
+- **Settings → 🔄 Reload from meeting** fetches a fresh roster at any time
+- If Graph fails (e.g. not in Teams, or no permission), the manual **👥 Pick from meeting** picker still works
+
 ## Troubleshooting
 
 ### App won't load in Teams
