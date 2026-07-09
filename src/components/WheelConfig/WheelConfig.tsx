@@ -51,17 +51,6 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
       </div>
 
       <div className="config-content">
-        {/* Pick from meeting */}
-        {onSelectParticipants && (
-          <button className="pick-button" onClick={onSelectParticipants}>
-            👥 Pick from meeting
-          </button>
-        )}
-        {onClearParticipants && allParticipants.length > 0 && (
-          <button className="clear-button" onClick={onClearParticipants}>
-            🗑 Clear list
-          </button>
-        )}
         <div className="quick-actions">
           {selectedIds.size !== allParticipants.length && 
             <button
@@ -116,10 +105,18 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
 
       {/* Footer with confirmation */}
       <div className="config-footer">
-        <p className="info-text">
-          The wheel will contain {selectedIds.size > 0 ? selectedIds.size : 'no'} participant
-          {selectedIds.size !== 1 ? 's' : ''}
-        </p>
+        <div className="config-actions">
+          {onSelectParticipants && (
+            <button className="pick-button" onClick={onSelectParticipants}>
+              👥 Pick from meeting
+            </button>
+          )}
+          {onClearParticipants && allParticipants.length > 0 && (
+            <button className="clear-button" onClick={onClearParticipants}>
+              🗑 Clear list
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
