@@ -101,8 +101,6 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
         <WinnerAnnouncement
           winner={winner}
           onDismiss={handleWinnerDismiss}
-          autoHide={true}
-          autoHideDelay={6000}
         />
       )}
     </div>

@@ -1,69 +1,66 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { Participant } from '@/types/meeting';
 import './WinnerAnnouncement.css';
 
 export interface WinnerAnnouncementProps {
   winner: Participant;
   onDismiss?: () => void;
-  autoHide?: boolean;
-  autoHideDelay?: number;
 }
+
+const MESSAGES = [
+  'The Keepit Roulette has spoken!',
+  'Keepit picks you!',
+  'You can\'t Keepit from winning!',
+  'The Keepit oracle decides!',
+  'Keepit real — you\'re the one!',
+  'Keepit spinning… and you won!',
+  'The wheel Keepits it fair!',
+  'Keepit lucky!',
+  'Destiny, Keepit style!',
+  'The Keepit wheel never lies!',
+  'Keepit going — you\'re chosen!',
+  'Fortune Keepits favouring you!',
+];
 
 export const WinnerAnnouncement: React.FC<WinnerAnnouncementProps> = ({
   winner,
   onDismiss,
-  autoHide = true,
-  autoHideDelay = 8000,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    if (!autoHide) return;
-
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-      onDismiss?.();
-    }, autoHideDelay);
-
-    return () => clearTimeout(timer);
-  }, [autoHide, autoHideDelay, onDismiss]);
+  const message = useRef(MESSAGES[Math.floor(Math.random() * MESSAGES.length)]).current;
 
   if (!isVisible) return null;
 
-  const handleDismiss = (): void => {
+  const handleDismiss = () => {
     setIsVisible(false);
     onDismiss?.();
   };
 
   return (
-    <div className="winner-announcement-overlay">
-      <div className="winner-announcement-card">
-        <div className="winner-emoji">🎉</div>
+    <div className="wa-overlay" onClick={handleDismiss}>
+      <div className="wa-card" onClick={(e) => e.stopPropagation()}>
 
-        <h2 className="winner-announcement-title">Winner Selected!</h2>
+        {/* Floating sparks */}
+        <span className="wa-spark wa-spark-1" aria-hidden="true" />
+        <span className="wa-spark wa-spark-2" aria-hidden="true" />
+        <span className="wa-spark wa-spark-3" aria-hidden="true" />
+        <span className="wa-spark wa-spark-4" aria-hidden="true" />
+        <span className="wa-spark wa-spark-5" aria-hidden="true" />
+        <span className="wa-spark wa-spark-6" aria-hidden="true" />
 
-        <div className="winner-details">
-          <p className="winner-announcement-name">{winner.displayName}</p>
-          {winner.participantRole && (
-            <p className="winner-announcement-role">{winner.participantRole}</p>
-          )}
-          {winner.email && <p className="winner-announcement-email">{winner.email}</p>}
-        </div>
+        <div className="wa-crown" aria-hidden="true">👑</div>
 
-        <div className="winner-announcement-actions">
-          <button className="dismiss-button" onClick={handleDismiss} aria-label="Dismiss announcement">
-            Next Spin
-          </button>
-        </div>
+        <p className="wa-message">{message}</p>
 
-        <div className="winner-announcement-progress">
-          <div
-            className="progress-bar"
-            style={{
-              animation: `progress ${autoHideDelay}ms linear forwards`,
-            }}
-          />
-        </div>
+        <p className="wa-name" aria-live="assertive">{winner.displayName}</p>
+
+        {winner.participantRole && (
+          <p className="wa-role">{winner.participantRole}</p>
+        )}
+
+        <button className="wa-button" onClick={handleDismiss}>
+          Spin Again
+        </button>
       </div>
     </div>
   );
