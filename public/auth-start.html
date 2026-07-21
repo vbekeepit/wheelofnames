@@ -4,50 +4,51 @@
   <meta charset="utf-8">
   <title>Signing in…</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #060f0a;
-      color: #4de8a0;
-      text-align: center;
-      padding: 3rem 1rem;
-      margin: 0;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #060f0a; color: #4de8a0; text-align: center; padding: 3rem 1rem; margin: 0; }
+    #error { color: #ff6b6b; display: none; font-size: 0.85rem; margin-top: 1rem; word-break: break-all; }
   </style>
 </head>
 <body>
-  <p>Signing in to Microsoft 365…</p>
-  <script src="https://unpkg.com/@azure/msal-browser@2.38.3/dist/msal-browser.min.js"></script>
+  <p id="status">Signing in to Microsoft 365…</p>
+  <p id="error"></p>
+  <script
+    src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"
+    onerror="showError('MSAL CDN failed to load — check network/firewall')">
+  </script>
   <script>
+    function showError(msg) {
+      document.getElementById('status').textContent = 'Sign-in failed';
+      var el = document.getElementById('error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
     (function () {
-      var params = new URLSearchParams(window.location.search);
-      var tenantId = params.get('tenantId') || 'common';
+      try {
+        if (typeof msal === 'undefined') { showError('MSAL not loaded'); return; }
 
-      // Persist for auth-end.html (same window, same sessionStorage)
-      sessionStorage.setItem('spin-wheel:tenantId', tenantId);
+        var params = new URLSearchParams(window.location.search);
+        var tenantId = params.get('tenantId') || 'common';
+        sessionStorage.setItem('spin-wheel:tenantId', tenantId);
 
-      var msalConfig = {
-        auth: {
-          clientId: 'f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4',
-          authority: 'https://login.microsoftonline.com/' + tenantId,
-          redirectUri: 'https://vbekeepit.github.io/wheelofnames/auth-end.html',
-          navigateToLoginRequestUrl: false,
-        },
-        cache: {
-          cacheLocation: 'sessionStorage',
-          storeAuthStateInCookie: false,
-        },
-      };
-
-      var msalInstance = new msal.PublicClientApplication(msalConfig);
-
-      msalInstance.handleRedirectPromise()
-        .then(function (response) {
-          if (response) return; // already handled
-          msalInstance.loginRedirect({ scopes: ['Chat.ReadBasic'] });
-        })
-        .catch(function (err) {
-          console.error('MSAL error in auth-start:', err);
+        var msalInstance = new msal.PublicClientApplication({
+          auth: {
+            clientId: 'f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4',
+            authority: 'https://login.microsoftonline.com/' + tenantId,
+            redirectUri: 'https://vbekeepit.github.io/wheelofnames/auth-end.html',
+            navigateToLoginRequestUrl: false,
+          },
+          cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false },
         });
+
+        msalInstance.handleRedirectPromise()
+          .then(function (response) {
+            if (response) return;
+            return msalInstance.loginRedirect({ scopes: ['Chat.ReadBasic'] });
+          })
+          .catch(function (err) { showError(err.message || String(err)); });
+
+      } catch (e) { showError(e.message || String(e)); }
     })();
   </script>
 </body>
