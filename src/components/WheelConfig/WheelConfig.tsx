@@ -110,17 +110,17 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
         <div className="config-actions">
           {onReloadFromMeeting && (
             <button className="pick-button" onClick={onReloadFromMeeting}>
-              🔄 Reload from meeting
+              ↺ Reload participants
             </button>
           )}
           {onSelectParticipants && (
             <button className="pick-button" onClick={onSelectParticipants}>
-              👥 Pick from meeting
+              Pick manually
             </button>
           )}
           {onClearParticipants && allParticipants.length > 0 && (
             <button className="clear-button" onClick={onClearParticipants}>
-              🗑 Clear list
+              Clear list
             </button>
           )}
         </div>
