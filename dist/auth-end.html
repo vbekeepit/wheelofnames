@@ -4,58 +4,56 @@
   <meta charset="utf-8">
   <title>Completing sign-in…</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #060f0a;
-      color: #4de8a0;
-      text-align: center;
-      padding: 3rem 1rem;
-      margin: 0;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #060f0a; color: #4de8a0; text-align: center; padding: 3rem 1rem; margin: 0; }
   </style>
 </head>
 <body>
   <p>Completing sign-in…</p>
-  <script src="https://unpkg.com/@azure/msal-browser@2.38.3/dist/msal-browser.min.js"></script>
-  <script src="https://unpkg.com/@microsoft/teams-js@2.31.0/dist/MicrosoftTeams.min.js"></script>
+  <script src="https://res.cdn.office.net/teams-js/2.31.0/js/MicrosoftTeams.min.js"></script>
   <script>
     (async function () {
-      var tenantId = sessionStorage.getItem('spin-wheel:tenantId') || 'common';
-
-      var msalConfig = {
-        auth: {
-          clientId: '1729cc2c-d54b-4615-8e4d-8a3460fb3f00',
-          authority: 'https://login.microsoftonline.com/' + tenantId,
-          redirectUri: 'https://vbekeepit.github.io/wheelofnames/auth-end.html',
-          navigateToLoginRequestUrl: false,
-        },
-        cache: {
-          cacheLocation: 'sessionStorage',
-          storeAuthStateInCookie: false,
-        },
-      };
+      async function notifyTeams(success, payload) {
+        await microsoftTeams.app.initialize();
+        if (success) microsoftTeams.authentication.notifySuccess(payload);
+        else microsoftTeams.authentication.notifyFailure(payload);
+      }
 
       try {
-        var msalInstance = new msal.PublicClientApplication(msalConfig);
-        var response = await msalInstance.handleRedirectPromise();
+        const params = new URLSearchParams(window.location.search);
+        const error = params.get('error');
+        if (error) { await notifyTeams(false, params.get('error_description') || error); return; }
 
-        await microsoftTeams.app.initialize();
+        const code = params.get('code');
+        if (!code) { await notifyTeams(false, 'No authorization code received'); return; }
 
-        if (response && response.accessToken) {
-          microsoftTeams.authentication.notifySuccess(JSON.stringify({
-            accessToken: response.accessToken,
-            expiresAt: response.expiresOn ? response.expiresOn.getTime() : Date.now() + 3600000,
-          }));
-        } else {
-          microsoftTeams.authentication.notifyFailure('No access token received');
-        }
-      } catch (err) {
-        try {
-          await microsoftTeams.app.initialize();
-          microsoftTeams.authentication.notifyFailure(err.message || 'Authentication failed');
-        } catch (e) {
-          console.error('Failed to notify Teams of auth failure:', e);
-        }
+        const tenantId = sessionStorage.getItem('spin-wheel:tenantId') || 'common';
+        const verifier = sessionStorage.getItem('spin-wheel:pkce-verifier');
+
+        const resp = await fetch(
+          'https://login.microsoftonline.com/' + tenantId + '/oauth2/v2.0/token',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              client_id: 'f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4',
+              grant_type: 'authorization_code',
+              code: code,
+              redirect_uri: 'https://vbekeepit.github.io/wheelofnames/auth-end.html',
+              code_verifier: verifier,
+              scope: 'Chat.ReadBasic offline_access',
+            }),
+          }
+        );
+
+        const data = await resp.json();
+        if (data.error) { await notifyTeams(false, data.error_description || data.error); return; }
+
+        await notifyTeams(true, JSON.stringify({
+          accessToken: data.access_token,
+          expiresAt: Date.now() + data.expires_in * 1000,
+        }));
+      } catch (e) {
+        try { await notifyTeams(false, e.message || 'Auth failed'); } catch {}
       }
     })();
   </script>
