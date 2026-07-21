@@ -20,9 +20,9 @@ export default function App() {
     context?.chatId || '',
   );
 
-  // Auto-load from Graph on first open when meeting roster is empty
+  // Auto-load from Graph on every open when chatId is available
   useEffect(() => {
-    if (context?.chatId && participants.length === 0) {
+    if (context?.chatId) {
       fetchFromMeeting().catch(() => {}); // Silent fail — picker is still available
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

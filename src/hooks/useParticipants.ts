@@ -101,12 +101,8 @@ export function useParticipants(
       const token = await getGraphToken(tenantId);
       const fetched = await getMeetingMembers(chatId, token);
       if (fetched.length > 0) {
-        setParticipantsState((prev) => {
-          const existingIds = new Set(prev.map((p) => p.id));
-          const merged = [...prev, ...fetched.filter((p) => !existingIds.has(p.id))];
-          save(merged);
-          return merged;
-        });
+        save(fetched);
+        setParticipantsState(fetched);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load meeting participants');
