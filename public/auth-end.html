@@ -9,45 +9,51 @@
 </head>
 <body>
   <p>Completing sign-in…</p>
-  <script
-    src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"
-    onerror="document.body.innerHTML='<p style=color:#ff6b6b>MSAL CDN failed to load</p>'">
-  </script>
-  <script src="https://unpkg.com/@microsoft/teams-js@2.31.0/dist/MicrosoftTeams.min.js"></script>
+  <script src="https://res.cdn.office.net/teams-js/2.31.0/js/MicrosoftTeams.min.js"></script>
   <script>
     (async function () {
-      var tenantId = sessionStorage.getItem('spin-wheel:tenantId') || 'common';
+      async function notifyTeams(success, payload) {
+        await microsoftTeams.app.initialize();
+        if (success) microsoftTeams.authentication.notifySuccess(payload);
+        else microsoftTeams.authentication.notifyFailure(payload);
+      }
 
       try {
-        var msalInstance = new msal.PublicClientApplication({
-          auth: {
-            clientId: 'f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4',
-            authority: 'https://login.microsoftonline.com/' + tenantId,
-            redirectUri: 'https://vbekeepit.github.io/wheelofnames/auth-end.html',
-            navigateToLoginRequestUrl: false,
-          },
-          cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false },
-        });
+        const params = new URLSearchParams(window.location.search);
+        const error = params.get('error');
+        if (error) { await notifyTeams(false, params.get('error_description') || error); return; }
 
-        var response = await msalInstance.handleRedirectPromise();
+        const code = params.get('code');
+        if (!code) { await notifyTeams(false, 'No authorization code received'); return; }
 
-        await microsoftTeams.app.initialize();
+        const tenantId = sessionStorage.getItem('spin-wheel:tenantId') || 'common';
+        const verifier = sessionStorage.getItem('spin-wheel:pkce-verifier');
 
-        if (response && response.accessToken) {
-          microsoftTeams.authentication.notifySuccess(JSON.stringify({
-            accessToken: response.accessToken,
-            expiresAt: response.expiresOn ? response.expiresOn.getTime() : Date.now() + 3600000,
-          }));
-        } else {
-          microsoftTeams.authentication.notifyFailure('No access token received');
-        }
-      } catch (err) {
-        try {
-          await microsoftTeams.app.initialize();
-          microsoftTeams.authentication.notifyFailure(err.message || 'Authentication failed');
-        } catch (e) {
-          console.error('Failed to notify Teams:', e);
-        }
+        const resp = await fetch(
+          'https://login.microsoftonline.com/' + tenantId + '/oauth2/v2.0/token',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              client_id: 'f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4',
+              grant_type: 'authorization_code',
+              code: code,
+              redirect_uri: 'https://vbekeepit.github.io/wheelofnames/auth-end.html',
+              code_verifier: verifier,
+              scope: 'Chat.ReadBasic offline_access',
+            }),
+          }
+        );
+
+        const data = await resp.json();
+        if (data.error) { await notifyTeams(false, data.error_description || data.error); return; }
+
+        await notifyTeams(true, JSON.stringify({
+          accessToken: data.access_token,
+          expiresAt: Date.now() + data.expires_in * 1000,
+        }));
+      } catch (e) {
+        try { await notifyTeams(false, e.message || 'Auth failed'); } catch {}
       }
     })();
   </script>

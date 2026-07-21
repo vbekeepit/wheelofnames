@@ -11,10 +11,6 @@
 <body>
   <p id="status">Signing in to Microsoft 365…</p>
   <p id="error"></p>
-  <script
-    src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"
-    onerror="showError('MSAL CDN failed to load — check network/firewall')">
-  </script>
   <script>
     function showError(msg) {
       document.getElementById('status').textContent = 'Sign-in failed';
@@ -23,32 +19,37 @@
       el.style.display = 'block';
     }
 
-    (function () {
-      try {
-        if (typeof msal === 'undefined') { showError('MSAL not loaded'); return; }
+    async function generatePKCE() {
+      const verifier = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32))))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+      const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
+      const challenge = btoa(String.fromCharCode(...new Uint8Array(digest)))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+      return { verifier, challenge };
+    }
 
-        var params = new URLSearchParams(window.location.search);
-        var tenantId = params.get('tenantId') || 'common';
+    (async function () {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const tenantId = params.get('tenantId') || 'common';
         sessionStorage.setItem('spin-wheel:tenantId', tenantId);
 
-        var msalInstance = new msal.PublicClientApplication({
-          auth: {
-            clientId: 'f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4',
-            authority: 'https://login.microsoftonline.com/' + tenantId,
-            redirectUri: 'https://vbekeepit.github.io/wheelofnames/auth-end.html',
-            navigateToLoginRequestUrl: false,
-          },
-          cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false },
-        });
+        const { verifier, challenge } = await generatePKCE();
+        sessionStorage.setItem('spin-wheel:pkce-verifier', verifier);
 
-        msalInstance.handleRedirectPromise()
-          .then(function (response) {
-            if (response) return;
-            return msalInstance.loginRedirect({ scopes: ['Chat.ReadBasic'] });
-          })
-          .catch(function (err) { showError(err.message || String(err)); });
+        const authUrl = new URL('https://login.microsoftonline.com/' + tenantId + '/oauth2/v2.0/authorize');
+        authUrl.searchParams.set('client_id', 'f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4');
+        authUrl.searchParams.set('response_type', 'code');
+        authUrl.searchParams.set('redirect_uri', 'https://vbekeepit.github.io/wheelofnames/auth-end.html');
+        authUrl.searchParams.set('scope', 'Chat.ReadBasic offline_access');
+        authUrl.searchParams.set('code_challenge', challenge);
+        authUrl.searchParams.set('code_challenge_method', 'S256');
+        authUrl.searchParams.set('response_mode', 'query');
 
-      } catch (e) { showError(e.message || String(e)); }
+        window.location.href = authUrl.toString();
+      } catch (e) {
+        showError(e.message || String(e));
+      }
     })();
   </script>
 </body>
