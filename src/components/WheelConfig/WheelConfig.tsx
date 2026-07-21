@@ -110,7 +110,7 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
         <div className="config-actions">
           {onReloadFromMeeting && (
             <button className="pick-button" onClick={onReloadFromMeeting}>
-              ↺ Reload participants
+              Autopick
             </button>
           )}
           {onSelectParticipants && (

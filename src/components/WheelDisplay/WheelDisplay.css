@@ -84,20 +84,21 @@
 
 .config-button {
   padding: 0.625rem 1.25rem;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   font-weight: 600;
+  letter-spacing: 0.03em;
   border: none;
   border-radius: 6px;
-  background-color: var(--accent-color, #0c5cf5);
-  color: white;
+  background: #06754a;
+  color: #fff;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 100px;
+  transition: background 0.18s, box-shadow 0.18s;
+  box-shadow: 0 0 10px rgba(6, 117, 74, 0.35);
 }
 
 .config-button:hover {
-  background-color: #0a4ab0;
-  box-shadow: 0 2px 8px rgba(12, 92, 245, 0.3);
+  background: #088a58;
+  box-shadow: 0 0 18px rgba(6, 117, 74, 0.55);
 }
 
 .config-button:active {
