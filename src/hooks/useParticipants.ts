@@ -3,7 +3,7 @@ import { dialog } from '@microsoft/teams-js';
 import type { PeoplePickerResult } from '@microsoft/teams-js';
 import type { Participant, UseParticipantsResult } from '@/types/meeting';
 import { getGraphToken } from '@/services/authService';
-import { getMeetingMembers } from '@/services/graphService';
+import { getMeetingMembers, filterToActiveParticipants } from '@/services/graphService';
 
 const STORAGE_KEY = 'spin-the-wheel:participants';
 const PICKER_URL = 'https://vbekeepit.github.io/wheelofnames/?mode=picker';
@@ -100,9 +100,10 @@ export function useParticipants(
     try {
       const token = await getGraphToken(tenantId);
       const fetched = await getMeetingMembers(chatId, token);
-      if (fetched.length > 0) {
-        save(fetched);
-        setParticipantsState(fetched);
+      const active = await filterToActiveParticipants(fetched, token);
+      if (active.length > 0) {
+        save(active);
+        setParticipantsState(active);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load meeting participants');
