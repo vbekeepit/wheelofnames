@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Participant } from '@/types/meeting';
 import { Wheel } from '@/components/Wheel';
 import { WheelConfig } from '@/components/WheelConfig';
@@ -25,6 +25,19 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
   const [showConfig, setShowConfig] = useState(false);
   const [winner, setWinner] = useState<Participant | null>(null);
+
+  // Keep selectedParticipants in sync with allParticipants:
+  // auto-select newcomers, remove anyone no longer in the list
+  useEffect(() => {
+    const allIds = new Set(allParticipants.map(p => p.id));
+    setSelectedParticipants(prev => {
+      const stillPresent = prev.filter(p => allIds.has(p.id));
+      const prevIds = new Set(stillPresent.map(p => p.id));
+      const newcomers = allParticipants.filter(p => !prevIds.has(p.id));
+      if (newcomers.length === 0 && stillPresent.length === prev.length) return prev;
+      return [...stillPresent, ...newcomers];
+    });
+  }, [allParticipants]);
 
   const handleWinnerSelected = (w: Participant) => setWinner(w);
   const handleParticipantsChange = (p: Participant[]) => setSelectedParticipants(p);
