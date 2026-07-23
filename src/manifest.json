@@ -23,8 +23,8 @@
     "termsOfUseUrl": "https://vbekeepit.github.io/wheelofnames/terms/"
   },
   "webApplicationInfo": {
-    "id": "f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4",
-    "resource": "api://vbekeepit.github.io/wheelofnames/f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4"
+    "id": "1729cc2c-d54b-4615-8e4d-8a3460fb3f00",
+    "resource": "api://vbekeepit.github.io/wheelofnames/1729cc2c-d54b-4615-8e4d-8a3460fb3f00"
   },
   "permissions": ["identity"],
   "validDomains": ["vbekeepit.github.io"],

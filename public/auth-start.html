@@ -38,7 +38,7 @@
         sessionStorage.setItem('spin-wheel:pkce-verifier', verifier);
 
         const authUrl = new URL('https://login.microsoftonline.com/' + tenantId + '/oauth2/v2.0/authorize');
-        authUrl.searchParams.set('client_id', 'f4ff3b9d-5b8f-4ea2-859b-4c3ea3e07da4');
+        authUrl.searchParams.set('client_id', '1729cc2c-d54b-4615-8e4d-8a3460fb3f00');
         authUrl.searchParams.set('response_type', 'code');
         authUrl.searchParams.set('redirect_uri', 'https://vbekeepit.github.io/wheelofnames/auth-end.html');
         authUrl.searchParams.set('scope', 'Chat.ReadBasic offline_access');
