@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useMeetingContext } from '@/hooks/useMeetingContext';
 import { useParticipants } from '@/hooks/useParticipants';
 import { WheelDisplay } from '@/components/WheelDisplay';
@@ -28,6 +28,8 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context?.chatId]);
 
+  const [showConfig, setShowConfig] = useState(false);
+
   // Determine theme from context
   const theme = context?.theme || 'default';
 
@@ -56,6 +58,16 @@ export default function App() {
       <div className={`app-container theme-${theme}`}>
         <header className="app-header">
           <h1>Spin the Wheel</h1>
+          {participants.length > 0 && (
+            <button
+              className="settings-icon-button"
+              onClick={() => setShowConfig(s => !s)}
+              aria-label="Configure participants"
+              title="Configure participants"
+            >
+              ⚙️
+            </button>
+          )}
         </header>
 
         <main className="app-main">
@@ -71,17 +83,11 @@ export default function App() {
               onSelectParticipants={selectFromPicker}
               onReloadFromMeeting={context?.chatId ? fetchFromMeeting : undefined}
               onClearParticipants={() => setParticipants([])}
+              showConfig={showConfig}
+              onConfigClose={() => setShowConfig(false)}
             />
           )}
         </main>
-
-        <footer className="app-footer">
-          {participants.length > 0 && (
-            <p className="participant-count">
-              {participants.length} participant{participants.length !== 1 ? 's' : ''} loaded
-            </p>
-          )}
-        </footer>
       </div>
     </ErrorBoundary>
   );

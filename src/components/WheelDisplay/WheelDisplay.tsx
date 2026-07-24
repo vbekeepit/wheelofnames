@@ -12,6 +12,8 @@ export interface WheelDisplayProps {
   onSelectParticipants?: () => void;
   onReloadFromMeeting?: () => Promise<void>;
   onClearParticipants?: () => void;
+  showConfig?: boolean;
+  onConfigClose?: () => void;
 }
 
 export const WheelDisplay: React.FC<WheelDisplayProps> = ({
@@ -21,9 +23,10 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   onSelectParticipants,
   onReloadFromMeeting,
   onClearParticipants,
+  showConfig = false,
+  onConfigClose,
 }) => {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
-  const [showConfig, setShowConfig] = useState(false);
   const [winner, setWinner] = useState<Participant | null>(null);
 
   // Keep selectedParticipants in sync with allParticipants:
@@ -81,7 +84,7 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
               allParticipants={allParticipants}
               selectedParticipants={selectedParticipants}
               onParticipantsChange={handleParticipantsChange}
-              onClose={() => setShowConfig(false)}
+              onClose={onConfigClose}
               onSelectParticipants={onSelectParticipants}
               onReloadFromMeeting={onReloadFromMeeting}
               onClearParticipants={handleClear}
@@ -90,26 +93,15 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
         )}
 
         {!showConfig && (
-          <>
-            <div className="wheel-display-content">
-              <Wheel
-                participants={displayParticipants}
-                onWinnerSelected={handleWinnerSelected}
-                spinDuration={4000}
-                spins={3}
-                enableKeyboardControl={true}
-              />
-            </div>
-            <div className="wheel-display-header">
-              <button
-                className="config-button"
-                onClick={() => setShowConfig(!showConfig)}
-                aria-label={showConfig ? 'Hide participant settings' : 'Show participant settings'}
-              >
-                {'⚙️ Settings'}
-              </button>
-            </div>
-          </>
+          <div className="wheel-display-content">
+            <Wheel
+              participants={displayParticipants}
+              onWinnerSelected={handleWinnerSelected}
+              spinDuration={4000}
+              spins={3}
+              enableKeyboardControl={true}
+            />
+          </div>
         )}
       </div>
 
