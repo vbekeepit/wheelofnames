@@ -63,7 +63,7 @@ export function useParticipants(
         (sdkResponse) => {
           setIsLoading(false);
           if (sdkResponse.err) {
-            setError(sdkResponse.err.message ?? 'People picker failed');
+            // Dialog was closed/cancelled — not an error, just dismiss silently
             resolve();
             return;
           }
