@@ -5,6 +5,10 @@ const SCOPE = 'Chat.ReadBasic Presence.Read.All offline_access';
 const AUTH_START_URL = 'https://vbekeepit.github.io/wheelofnames/auth-start.html';
 const TOKEN_KEY = 'spin-wheel:graph-token';
 const REFRESH_KEY = 'spin-wheel:refresh-token';
+// Bump this string whenever SCOPE changes — clears the cached access token so
+// the refresh-token flow picks up the new scope on next app open.
+const SCOPE_VERSION_KEY = 'spin-wheel:scope-v';
+const SCOPE_VERSION = '2';
 
 interface CachedToken {
   accessToken: string;
@@ -13,6 +17,13 @@ interface CachedToken {
 
 function getCachedToken(): string | null {
   try {
+    // If the scope changed since the token was issued, evict it so the
+    // refresh-token flow runs with the updated scope.
+    if (localStorage.getItem(SCOPE_VERSION_KEY) !== SCOPE_VERSION) {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.setItem(SCOPE_VERSION_KEY, SCOPE_VERSION);
+      return null;
+    }
     const raw = localStorage.getItem(TOKEN_KEY);
     if (!raw) return null;
     const cached: CachedToken = JSON.parse(raw);
