@@ -59,15 +59,20 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
     return (
       <div className="wheel-display empty">
         <h2>No participants yet</h2>
-        {onSelectParticipants ? (
-          <>
-            <p>Pick people from the meeting roster to spin the wheel.</p>
-            <button className="select-participants-button" onClick={onSelectParticipants}>
-              Pick from meeting
-            </button>
-          </>
-        ) : (
-          <p>Open this app inside a Teams meeting to get started.</p>
+        <p>Load participants to spin the wheel.</p>
+        {(onReloadFromMeeting || onSelectParticipants) && (
+          <div className="empty-actions">
+            {onReloadFromMeeting && (
+              <button className="pick-button" onClick={onReloadFromMeeting}>
+                Autopick
+              </button>
+            )}
+            {onSelectParticipants && (
+              <button className="pick-button" onClick={onSelectParticipants}>
+                Pick manually
+              </button>
+            )}
+          </div>
         )}
       </div>
     );
