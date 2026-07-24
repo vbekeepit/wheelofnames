@@ -51,6 +51,7 @@
         await notifyTeams(true, JSON.stringify({
           accessToken: data.access_token,
           expiresAt: Date.now() + data.expires_in * 1000,
+          refreshToken: data.refresh_token ?? null,
         }));
       } catch (e) {
         try { await notifyTeams(false, e.message || 'Auth failed'); } catch {}
