@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Participant } from '@/types/meeting';
+import type { SpinResult } from '@/services/historyService';
 import { Wheel } from '@/components/Wheel';
 import { WheelConfig } from '@/components/WheelConfig';
 import { WinnerAnnouncement } from '@/components/WinnerAnnouncement';
@@ -14,6 +15,8 @@ export interface WheelDisplayProps {
   onClearParticipants?: () => void;
   showConfig?: boolean;
   onConfigClose?: () => void;
+  onWinnerConfirmed?: (winner: Participant) => Promise<void>;
+  spinHistory?: SpinResult[];
 }
 
 export const WheelDisplay: React.FC<WheelDisplayProps> = ({
@@ -25,6 +28,8 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
   onClearParticipants,
   showConfig = false,
   onConfigClose,
+  onWinnerConfirmed,
+  spinHistory = [],
 }) => {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
   const [winner, setWinner] = useState<Participant | null>(null);
@@ -42,7 +47,10 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
     });
   }, [allParticipants]);
 
-  const handleWinnerSelected = (w: Participant) => setWinner(w);
+  const handleWinnerSelected = (w: Participant) => {
+    setWinner(w);
+    onWinnerConfirmed?.(w).catch(() => {});
+  };
   const handleParticipantsChange = (p: Participant[]) => setSelectedParticipants(p);
   const handleWinnerDismiss = () => setWinner(null);
   const handleClear = () => { setSelectedParticipants([]); onClearParticipants?.(); };
@@ -93,6 +101,7 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
               onSelectParticipants={onSelectParticipants}
               onReloadFromMeeting={onReloadFromMeeting}
               onClearParticipants={handleClear}
+              spinHistory={spinHistory}
             />
           </div>
         )}

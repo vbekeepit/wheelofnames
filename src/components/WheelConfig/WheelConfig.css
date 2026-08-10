@@ -221,6 +221,46 @@
   font-size: 0.95rem;
 }
 
+/* Spin history */
+.history-section {
+  padding: 0 1.5rem 1rem;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  padding-top: 1rem;
+}
+
+.history-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary, #666666);
+  margin-bottom: 0.6rem;
+}
+
+.history-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.history-winner {
+  font-weight: 500;
+  color: var(--text-primary, #262626);
+}
+
+.history-meta {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #666666);
+}
+
 /* Footer */
 .config-footer {
   padding: 1rem 1.5rem;

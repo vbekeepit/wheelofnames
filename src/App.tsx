@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useMeetingContext } from '@/hooks/useMeetingContext';
 import { useParticipants } from '@/hooks/useParticipants';
 import { WheelDisplay } from '@/components/WheelDisplay';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { saveSpinResult, getSpinHistory, type SpinResult } from '@/services/historyService';
+import type { Participant } from '@/types/meeting';
 
 export default function App() {
   const { context, isLoading: contextLoading, error: contextError } = useMeetingContext();
@@ -29,6 +31,27 @@ export default function App() {
   }, [context?.chatId]);
 
   const [showConfig, setShowConfig] = useState(false);
+  const [spinHistory, setSpinHistory] = useState<SpinResult[]>([]);
+
+  useEffect(() => {
+    if (context?.chatId) {
+      getSpinHistory(context.chatId).then(setSpinHistory).catch(() => {});
+    }
+  }, [context?.chatId]);
+
+  const handleWinnerConfirmed = useCallback(async (winner: Participant) => {
+    if (!context?.chatId) return;
+    const result = {
+      meeting_id: context.chatId,
+      winner_name: winner.displayName,
+      spun_by: context.userDisplayName || 'Unknown',
+    };
+    await saveSpinResult(result).catch(() => {});
+    setSpinHistory(prev => [
+      { ...result, spun_at: new Date().toISOString() },
+      ...prev,
+    ]);
+  }, [context?.chatId, context?.userDisplayName]);
 
   // Determine theme from context
   const theme = context?.theme || 'default';
@@ -85,6 +108,8 @@ export default function App() {
               onClearParticipants={() => setParticipants([])}
               showConfig={showConfig}
               onConfigClose={() => setShowConfig(false)}
+              onWinnerConfirmed={handleWinnerConfirmed}
+              spinHistory={spinHistory}
             />
           )}
         </main>

@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Participant } from '@/types/meeting';
+import type { SpinResult } from '@/services/historyService';
 import './WheelConfig.css';
 
 export interface WheelConfigProps {
@@ -10,6 +11,7 @@ export interface WheelConfigProps {
   onSelectParticipants?: () => void;
   onReloadFromMeeting?: () => Promise<void>;
   onClearParticipants?: () => void;
+  spinHistory?: SpinResult[];
 }
 
 export const WheelConfig: React.FC<WheelConfigProps> = ({
@@ -20,6 +22,7 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
   onSelectParticipants,
   onReloadFromMeeting,
   onClearParticipants,
+  spinHistory = [],
 }) => {
   const toggleParticipant = (participant: Participant): void => {
     const isSelected = selectedParticipants.some((p) => p.id === participant.id);
@@ -104,6 +107,25 @@ export const WheelConfig: React.FC<WheelConfigProps> = ({
           )}
         </div>
       </div>
+
+      {/* Spin history */}
+      {spinHistory.length > 0 && (
+        <div className="history-section">
+          <h3 className="history-title">Recent spins</h3>
+          <ul className="history-list">
+            {spinHistory.map((r, i) => (
+              <li key={r.id ?? i} className="history-item">
+                <span className="history-winner">{r.winner_name}</span>
+                <span className="history-meta">
+                  {r.spun_at
+                    ? new Date(r.spun_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    : ''}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Footer with confirmation */}
       <div className="config-footer">
