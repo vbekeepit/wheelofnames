@@ -56,6 +56,8 @@ body {
   height: 100vh;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .app-header {
