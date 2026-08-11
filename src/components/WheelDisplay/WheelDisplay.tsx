@@ -34,6 +34,7 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
 }) => {
   const [selectedParticipants, setSelectedParticipants] = useState<Participant[]>(allParticipants);
   const [winner, setWinner] = useState<Participant | null>(null);
+  const hasSavedRef = React.useRef(false);
 
   // Keep selectedParticipants in sync with allParticipants:
   // auto-select newcomers, remove anyone no longer in the list
@@ -50,10 +51,16 @@ export const WheelDisplay: React.FC<WheelDisplayProps> = ({
 
   const handleWinnerSelected = (w: Participant) => {
     setWinner(w);
-    onWinnerConfirmed?.(w).catch(() => {});
+    if (!hasSavedRef.current) {
+      hasSavedRef.current = true;
+      onWinnerConfirmed?.(w).catch(() => {});
+    }
   };
   const handleParticipantsChange = (p: Participant[]) => setSelectedParticipants(p);
-  const handleWinnerDismiss = () => setWinner(null);
+  const handleWinnerDismiss = () => {
+    hasSavedRef.current = false;
+    setWinner(null);
+  };
   const handleClear = () => { setSelectedParticipants([]); onClearParticipants?.(); };
 
   if (isLoading) {

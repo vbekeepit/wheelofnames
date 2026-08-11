@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMeetingContext } from '@/hooks/useMeetingContext';
 import { useParticipants } from '@/hooks/useParticipants';
 import { WheelDisplay } from '@/components/WheelDisplay';
@@ -33,7 +33,7 @@ const DEV_SPIN_HISTORY: SpinResult[] = [
 ];
 
 export default function App() {
-  const { context, isLoading: contextLoading, error: contextError } = useMeetingContext();
+  const { context, isLoading: contextLoading } = useMeetingContext();
   const {
     participants,
     isLoading: participantsLoading,
@@ -66,6 +66,9 @@ export default function App() {
   const [showConfig, setShowConfig] = useState(false);
   const [spinHistory, setSpinHistory] = useState<SpinResult[]>([]);
 
+  const participantsRef = useRef(participants);
+  useEffect(() => { participantsRef.current = participants; }, [participants]);
+
   useEffect(() => {
     if (context?.chatId) {
       getSpinHistory(context.chatId).then(setSpinHistory).catch(() => {});
@@ -77,7 +80,7 @@ export default function App() {
     const result = {
       meeting_id: context.chatId,
       winner_name: winner.displayName,
-      spun_by: participants.find(p => p.id === context.userId)?.displayName
+      spun_by: participantsRef.current.find(p => p.id === context.userId)?.displayName
         || context.userDisplayName
         || 'Unknown',
     };
@@ -86,7 +89,7 @@ export default function App() {
       { ...result, spun_at: new Date().toISOString() },
       ...prev,
     ]);
-  }, [context?.chatId, context?.userId, context?.userDisplayName, participants]);
+  }, [context?.chatId, context?.userId, context?.userDisplayName]);
 
   const effectiveSpinHistory = import.meta.env.DEV && !context ? DEV_SPIN_HISTORY : spinHistory;
 

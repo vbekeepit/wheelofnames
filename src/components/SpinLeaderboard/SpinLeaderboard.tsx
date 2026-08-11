@@ -39,7 +39,7 @@ interface SpinLeaderboardProps {
 }
 
 export const SpinLeaderboard: React.FC<SpinLeaderboardProps> = ({ history }) => {
-  if (history.length <= 10) return null;
+  if (history.length <= 9) return null;
 
   const { topWinners, topSpinners } = computeLeaderboard(history);
 
