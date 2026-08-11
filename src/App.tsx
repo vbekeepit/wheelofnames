@@ -77,14 +77,16 @@ export default function App() {
     const result = {
       meeting_id: context.chatId,
       winner_name: winner.displayName,
-      spun_by: context.userDisplayName || 'Unknown',
+      spun_by: participants.find(p => p.id === context.userId)?.displayName
+        || context.userDisplayName
+        || 'Unknown',
     };
     await saveSpinResult(result).catch(() => {});
     setSpinHistory(prev => [
       { ...result, spun_at: new Date().toISOString() },
       ...prev,
     ]);
-  }, [context?.chatId, context?.userDisplayName]);
+  }, [context?.chatId, context?.userId, context?.userDisplayName, participants]);
 
   const effectiveSpinHistory = import.meta.env.DEV && !context ? DEV_SPIN_HISTORY : spinHistory;
 
