@@ -19,11 +19,16 @@ export interface SpinResult {
 export async function saveSpinResult(
   result: Omit<SpinResult, 'id' | 'spun_at'>
 ): Promise<void> {
-  await fetch(SUPABASE_URL, {
+  const resp = await fetch(SUPABASE_URL, {
     method: 'POST',
     headers: { ...HEADERS, Prefer: 'return=minimal' },
     body: JSON.stringify(result),
   });
+  if (!resp.ok) {
+    const body = await resp.text().catch(() => '');
+    console.error(`Supabase insert failed ${resp.status}:`, body);
+    throw new Error(`Supabase insert failed: ${resp.status}`);
+  }
 }
 
 export async function getSpinHistory(meetingId: string): Promise<SpinResult[]> {
