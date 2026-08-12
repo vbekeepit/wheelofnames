@@ -7,6 +7,10 @@ interface LeaderEntry {
   count: number;
 }
 
+function stripSuffix(name: string): string {
+  return name.replace(/\s*\|\s*Keepit$/i, '').trim();
+}
+
 function computeLeaderboard(history: SpinResult[]): {
   topWinners: LeaderEntry[];
   topSpinners: LeaderEntry[];
@@ -15,8 +19,10 @@ function computeLeaderboard(history: SpinResult[]): {
   const spinnerCounts = new Map<string, number>();
 
   for (const result of history) {
-    winnerCounts.set(result.winner_name, (winnerCounts.get(result.winner_name) ?? 0) + 1);
-    spinnerCounts.set(result.spun_by, (spinnerCounts.get(result.spun_by) ?? 0) + 1);
+    const winner = stripSuffix(result.winner_name);
+    const spinner = stripSuffix(result.spun_by);
+    winnerCounts.set(winner, (winnerCounts.get(winner) ?? 0) + 1);
+    spinnerCounts.set(spinner, (spinnerCounts.get(spinner) ?? 0) + 1);
   }
 
   const topWinners = [...winnerCounts.entries()]
