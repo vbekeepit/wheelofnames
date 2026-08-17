@@ -7,7 +7,7 @@ A Microsoft Teams meeting app that randomly selects meeting participants using a
 - 🎡 **Interactive Wheel** — Visual spinning wheel for participant selection
 - 👥 **Auto-populated** — Automatically loads all meeting participants
 - 🎨 **Theme Support** — Respects Teams' light/dark/glass/contrast themes
-- 🔄 **Real-time Sync** — Synchronized across all meeting participants (Phase 5)
+- 📊 **Spin History & Leaderboard** — Per-meeting spin history stored in Supabase; top winners and spinners shown after 10+ spins
 - ⚡ **Fast & Smooth** — Optimized animations and responsive design
 
 ## Quick Start
@@ -69,6 +69,7 @@ src/
 - **TypeScript** — Type safety
 - **Vite** — Build tool
 - **TeamsJS v2** — Teams platform integration
+- **Supabase** — Spin history persistence
 - **Jest** — Unit testing
 
 ## Azure App Registration Setup (required for auto-detecting meeting participants)
