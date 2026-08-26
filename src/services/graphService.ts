@@ -16,12 +16,10 @@ interface GraphMembersResponse {
 
 interface PresenceRecord {
   id: string;
-  activity: string;
+  availability: string;
 }
 
-const ACTIVE_ACTIVITIES = new Set(['InAMeeting', 'InAConferenceCall', 'InACall', 'Presenting']);
-
-export async function filterToActiveParticipants(
+export async function filterToOnlineParticipants(
   participants: Participant[],
   token: string
 ): Promise<Participant[]> {
@@ -35,19 +33,18 @@ export async function filterToActiveParticipants(
         body: JSON.stringify({ ids: participants.map(p => p.id) }),
       }
     );
-    if (!resp.ok) return participants; // Presence.Read.All not yet consented — show all
+    if (!resp.ok) return participants; // Presence.Read.All not consented — show all
 
     const data: { value: PresenceRecord[] } = await resp.json();
-    const activityById = new Map(data.value.map(p => [p.id, p.activity]));
+    const availabilityById = new Map(data.value.map(p => [p.id, p.availability]));
 
-    const active = participants.filter(p => {
-      const activity = activityById.get(p.id);
-      // Unknown presence (external/guest users) → include; known but not in meeting → exclude
-      return !activity || ACTIVE_ACTIVITIES.has(activity);
+    const online = participants.filter(p => {
+      const availability = availabilityById.get(p.id);
+      // Unknown presence (guest/external) → include; explicitly Offline → exclude
+      return !availability || availability !== 'Offline';
     });
 
-    // Fallback: don't return empty list (e.g. before anyone has joined)
-    return active.length > 0 ? active : participants;
+    return online.length > 0 ? online : participants;
   } catch {
     return participants;
   }
