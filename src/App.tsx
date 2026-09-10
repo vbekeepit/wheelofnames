@@ -4,6 +4,7 @@ import { useParticipants } from '@/hooks/useParticipants';
 import { WheelDisplay } from '@/components/WheelDisplay';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { saveSpinResult, getSpinHistory, type SpinResult } from '@/services/historyService';
+import { hasTokenCached } from '@/services/authService';
 import type { Participant } from '@/types/meeting';
 
 const DEV_PARTICIPANTS: Participant[] = [
@@ -48,10 +49,12 @@ export default function App() {
     context?.chatId || '',
   );
 
-  // Auto-load from Graph on every open when chatId is available
+  // Auto-load from Graph only when we already have a cached token — avoids
+  // showing a popup silently on every app open. Users without a cached token
+  // can still load participants via the "Autopick" button.
   useEffect(() => {
-    if (context?.chatId) {
-      fetchFromMeeting().catch(() => {}); // Silent fail — picker is still available
+    if (context?.chatId && hasTokenCached()) {
+      fetchFromMeeting().catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context?.chatId]);

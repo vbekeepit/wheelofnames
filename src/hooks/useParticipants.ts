@@ -8,6 +8,25 @@ import { getMeetingMembers, filterToOnlineParticipants } from '@/services/graphS
 const STORAGE_KEY = 'spin-the-wheel:participants';
 const PICKER_URL = 'https://vbekeepit.github.io/wheelofnames/?mode=picker';
 
+// Base names (no company suffix) of participants permanently excluded from
+// selection. We strip everything after the first | – – — separator before
+// comparing, so "Anders Dalgaard | Keepit", "Anders Dalgaard", and
+// "Anders Dalgaard– Keepit" all resolve to the same key.
+const EXCLUDED_BASE_NAMES = new Set([
+  'anders dalgaard',
+  'vladyslav babak',
+  'stas shymanskyi',
+  'dmi leadership',
+]);
+
+function baseName(displayName: string): string {
+  return displayName.split(/\s*[|–—]\s*/)[0].trim().toLowerCase();
+}
+
+function excludeBlocked(participants: Participant[]): Participant[] {
+  return participants.filter(p => !EXCLUDED_BASE_NAMES.has(baseName(p.displayName)));
+}
+
 function load(): Participant[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -36,7 +55,7 @@ export function useParticipants(
   chatId: string,
   _options: UseParticipantsOptions = {}
 ): UseParticipantsResult {
-  const [participants, setParticipantsState] = useState<Participant[]>(load);
+  const [participants, setParticipantsState] = useState<Participant[]>(() => excludeBlocked(load()));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +64,7 @@ export function useParticipants(
   }, [participants]);
 
   const setParticipants = (next: Participant[]) => {
-    setParticipantsState(next);
+    setParticipantsState(excludeBlocked(next));
     setError(null);
   };
 
@@ -83,9 +102,7 @@ export function useParticipants(
           }));
           setParticipantsState((prev) => {
             const existingIds = new Set(prev.map((p) => p.id));
-            const merged = [...prev, ...mapped.filter((p) => !existingIds.has(p.id))];
-            save(merged);
-            return merged;
+            return excludeBlocked([...prev, ...mapped.filter((p) => !existingIds.has(p.id))]);
           });
           resolve();
         }
@@ -100,7 +117,7 @@ export function useParticipants(
     try {
       const token = await getGraphToken(tenantId);
       const fetched = await getMeetingMembers(chatId, token);
-      const online = await filterToOnlineParticipants(fetched, token);
+      const online = excludeBlocked(await filterToOnlineParticipants(fetched, token));
       if (online.length > 0) {
         save(online);
         setParticipantsState(online);

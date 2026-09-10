@@ -1,7 +1,7 @@
 import type { Participant } from '@/types/meeting';
 
 interface GraphMember {
-  '@odata.type': string;
+  '@odata.type'?: string;
   id: string;
   userId?: string;
   displayName?: string;
@@ -67,6 +67,8 @@ export async function getMeetingMembers(chatId: string, token: string): Promise<
     const data: GraphMembersResponse = await response.json();
 
     for (const member of data.value) {
+      const odataType = member['@odata.type'];
+      if (odataType && odataType !== '#microsoft.graph.aadUserConversationMember') continue;
       if (!member.displayName) continue;
       participants.push({
         id: member.userId ?? member.id,

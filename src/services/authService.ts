@@ -64,7 +64,7 @@ async function tryRefreshToken(tenantId: string): Promise<string | null> {
         }),
       }
     );
-    if (!resp.ok) return null;
+    if (!resp.ok) { localStorage.removeItem(REFRESH_KEY); return null; }
     const data = await resp.json();
     if (data.error) { localStorage.removeItem(REFRESH_KEY); return null; }
     const expiresAt = Date.now() + data.expires_in * 1000;
@@ -73,6 +73,18 @@ async function tryRefreshToken(tenantId: string): Promise<string | null> {
     return data.access_token;
   } catch {
     return null;
+  }
+}
+
+/** True only when a valid access token is in cache — meaning auto-fetch can
+ *  run with zero chance of showing a popup. We deliberately do not count a
+ *  refresh token here: we cannot know whether it is still valid without
+ *  actually trying it, so we leave that for the user-triggered Autopick path. */
+export function hasTokenCached(): boolean {
+  try {
+    return !!getCachedToken();
+  } catch {
+    return false;
   }
 }
 
